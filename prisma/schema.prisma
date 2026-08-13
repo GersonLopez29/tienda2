@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Category {
+  HOMBRE
+  MUJER
+  UNISEX
+}
+
+enum Condition {
+  COMO_NUEVA
+  POCO_USO
+  VINTAGE
+}
+
+model Product {
+  id            String     @id @default(cuid())
+  title         String
+  brand         String
+  category      Category
+  size          String
+  condition     Condition
+  price         Int
+  originalPrice Int?
+  material      String
+  story         String     @db.Text
+  pairing       String     @db.Text
+  measurements  Json
+  images        String[]   @default([])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
