@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BagIcon, XIcon } from "@/components/icons";
 import { CONDITION_LABEL, type Product } from "@/lib/types";
@@ -14,6 +14,12 @@ export function ProductModal({
   onClose: () => void;
   onAdd: (id: string) => void;
 }) {
+  const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    setActiveImage(0);
+  }, [product]);
+
   useEffect(() => {
     if (!product) return;
     document.body.style.overflow = "hidden";
@@ -47,7 +53,7 @@ export function ProductModal({
           className="grid w-full max-w-3xl grid-cols-1 overflow-y-auto rounded-[20px] bg-surface shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)] sm:grid-cols-2"
           style={{ maxHeight: "88vh" }}
         >
-          <div className="relative flex items-center justify-center bg-surface-2 p-7">
+          <div className="relative flex flex-col items-center justify-center bg-surface-2 p-7">
             <button
               type="button"
               onClick={onClose}
@@ -57,13 +63,13 @@ export function ProductModal({
               <XIcon className="h-4 w-4" />
             </button>
             <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-surface-2">
-              {product.images[0] ? (
+              {product.images[activeImage] ? (
                 <Image
-                  src={product.images[0]}
+                  src={product.images[activeImage]}
                   alt={product.title}
                   fill
                   sizes="(min-width: 640px) 45vw, 90vw"
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center text-sm text-ink-faint">
@@ -71,6 +77,23 @@ export function ProductModal({
                 </div>
               )}
             </div>
+            {product.images.length > 1 && (
+              <div className="mt-3 flex gap-2">
+                {product.images.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setActiveImage(i)}
+                    aria-label={`Ver foto ${i + 1}`}
+                    className={`relative h-14 w-14 flex-none overflow-hidden rounded-lg border-2 bg-surface-2 ${
+                      i === activeImage ? "border-ink" : "border-transparent"
+                    }`}
+                  >
+                    <Image src={src} alt="" fill sizes="56px" className="object-contain" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex min-w-0 flex-col gap-4 p-7">
             <p className="text-xs text-ink-faint">{product.brand}</p>
