@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   BagIcon,
@@ -13,7 +14,7 @@ import {
   TiktokIcon,
   TruckIcon,
 } from "@/components/icons";
-import { CATEGORY_LABEL, type Product } from "@/lib/types";
+import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine } from "@/components/storefront/cart-drawer";
@@ -285,13 +286,29 @@ export function Storefront({ products }: { products: Product[] }) {
           </div>
           <div className="flex items-center justify-center">
             <div className="w-full max-w-[300px] rounded-[20px] border border-line bg-surface p-5 shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]">
-              <div className="aspect-square rounded-[14px] bg-gradient-to-br from-mustard-wash to-mustard" />
-              <p className="mt-4 text-xs tracking-wide text-ink-faint">Levi&apos;s</p>
-              <h3 className="text-lg font-extrabold">Casaca Denim 90s</h3>
-              <p className="fvnum mt-2.5 text-xl font-extrabold">S/ 129</p>
-              <span className="mt-2.5 inline-block rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-surface">
-                Vintage
-              </span>
+              <div className="relative aspect-square overflow-hidden rounded-[14px] bg-gradient-to-br from-mustard-wash to-mustard">
+                {products[0]?.images[0] && (
+                  <Image
+                    src={products[0].images[0]}
+                    alt={products[0].title}
+                    fill
+                    sizes="300px"
+                    className="object-cover"
+                  />
+                )}
+              </div>
+              <p className="mt-4 text-xs tracking-wide text-ink-faint">
+                {products[0]?.brand ?? "ReFit Studio"}
+              </p>
+              <h3 className="text-lg font-extrabold">{products[0]?.title ?? "Aún sin prendas"}</h3>
+              {products[0] && (
+                <>
+                  <p className="fvnum mt-2.5 text-xl font-extrabold">S/ {products[0].price}</p>
+                  <span className="mt-2.5 inline-block rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-surface">
+                    {CONDITION_LABEL[products[0].condition]}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
