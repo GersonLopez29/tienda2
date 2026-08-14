@@ -105,7 +105,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
               >
                 <div className="relative h-16 w-16 flex-none overflow-hidden rounded-lg bg-surface-2">
                   {product.images[0] ? (
-                    <Image src={product.images[0]} alt="" fill sizes="64px" className="object-cover" />
+                    <Image src={product.images[0]} alt="" fill sizes="64px" className="object-contain" />
                   ) : (
                     <div className="flex h-full items-center justify-center text-[0.6rem] text-ink-faint">
                       Sin foto
