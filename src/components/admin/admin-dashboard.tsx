@@ -70,17 +70,45 @@ export function AdminDashboard({ products }: { products: Product[] }) {
 
       <div className="mx-auto max-w-[1100px] px-4 py-8 sm:px-6">
         {panel === "none" ? (
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-extrabold">Prendas ({products.length})</h2>
-            <button
-              type="button"
-              onClick={() => setPanel("create")}
-              className="flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-surface hover:bg-olive"
-            >
-              <PlusIcon className="h-4 w-4" />
-              Nueva prenda
-            </button>
-          </div>
+          <>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-extrabold">Prendas ({products.length})</h2>
+              <button
+                type="button"
+                onClick={() => setPanel("create")}
+                className="flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-surface hover:bg-olive"
+              >
+                <PlusIcon className="h-4 w-4" />
+                Nueva prenda
+              </button>
+            </div>
+
+            {products[0] && (
+              <div className="mb-6 flex items-center gap-4 rounded-2xl border border-line bg-surface p-4">
+                <div className="relative h-16 w-16 flex-none overflow-hidden rounded-lg bg-surface-2">
+                  {products[0].images[0] ? (
+                    <Image
+                      src={products[0].images[0]}
+                      alt=""
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-[0.6rem] text-ink-faint">
+                      Sin foto
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-olive-ink">Última prenda agregada</p>
+                  <p className="truncate text-sm font-bold">{products[0].title}</p>
+                  <p className="text-xs text-ink-faint">{products[0].brand}</p>
+                </div>
+                <p className="fvnum flex-none text-sm font-bold">S/ {products[0].price}</p>
+              </div>
+            )}
+          </>
         ) : (
           <div className="mb-6">
             <ProductForm
