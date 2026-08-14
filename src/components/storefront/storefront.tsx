@@ -114,7 +114,7 @@ export function Storefront({ products }: { products: Product[] }) {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10">
           <div className="flex flex-wrap items-center gap-5 py-3.5">
             <span className="font-[Arial_Black] text-2xl font-extrabold text-olive-ink">
-              ReFit Studio
+              K&N'Store
             </span>
             <form
               onSubmit={(e) => e.preventDefault()}
@@ -363,7 +363,7 @@ export function Storefront({ products }: { products: Product[] }) {
       <footer className="bg-ink py-14 text-stone-wash">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
           <div>
-            <p className="text-xl font-extrabold text-[#f2ecdf]">ReFit Studio</p>
+            <p className="text-xl font-extrabold text-[#f2ecdf]">K&N'Store</p>
             <p className="mt-2.5 max-w-[34ch] text-sm leading-relaxed text-[#a89e8c]">
               Ropa de segunda mano seleccionada pieza por pieza. Vintage, streetwear y casual —
               moda con menos impacto y más personalidad.
@@ -445,7 +445,7 @@ export function Storefront({ products }: { products: Product[] }) {
           </div>
         </div>
         <div className="mx-auto mt-11 max-w-[1280px] border-t border-white/10 px-4 pt-5 text-center text-xs text-[#8a8272] sm:px-6 lg:px-10">
-          © {new Date().getFullYear()} ReFit Studio — hecho con ropa que ya tenía una historia.
+          © {new Date().getFullYear()} K&N'Store — hecho con ropa que ya tenía una historia.
           <Link href="/admin" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
             Panel admin
           </Link>

@@ -49,7 +49,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
       <header className="border-b border-line bg-surface">
         <div className="mx-auto flex max-w-[1100px] items-center justify-between px-4 py-5 sm:px-6">
           <div>
-            <p className="text-xs text-ink-faint">ReFit Studio</p>
+            <p className="text-xs text-ink-faint">K&N'Store</p>
             <h1 className="text-lg font-extrabold">Panel de administrador</h1>
           </div>
           <div className="flex items-center gap-3">

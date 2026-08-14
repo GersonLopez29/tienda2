@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
         onSubmit={onSubmit}
         className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]"
       >
-        <h1 className="text-xl font-extrabold text-olive-ink">ReFit Studio</h1>
+        <h1 className="text-xl font-extrabold text-olive-ink">K&N'Store</h1>
         <p className="mt-1 text-sm text-ink-soft">Panel de administrador</p>
 
         <label className="mt-6 block text-sm font-semibold" htmlFor="email">

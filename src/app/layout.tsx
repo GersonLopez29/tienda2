@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ReFit Studio",
+  title: "K&N'Store",
   description: "Ropa de segunda mano seleccionada — vintage, streetwear y casual.",
 };
 

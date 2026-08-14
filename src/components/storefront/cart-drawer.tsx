@@ -28,7 +28,7 @@ export function CartDrawer({
   const checkout = () => {
     if (!lines.length) return;
     const message = [
-      "Hola! Quiero comprar estas prendas de ReFit Studio:",
+      "Hola! Quiero comprar estas prendas de K&N'Store:",
       ...lines.map(
         (l) => `- ${l.product.title} (Talla ${l.product.size}) x${l.qty} - S/ ${l.product.price * l.qty}`
       ),
