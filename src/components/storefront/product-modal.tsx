@@ -139,11 +139,11 @@ export function ProductModal({
             </div>
             <div>
               <h4 className="mb-2 text-xs tracking-wide text-ink-faint uppercase">Historia y estado</h4>
-              <p className="text-sm leading-relaxed text-ink-soft">{product.story}</p>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">{product.story}</p>
             </div>
             <div>
               <h4 className="mb-2 text-xs tracking-wide text-ink-faint uppercase">Cómo combinarla</h4>
-              <p className="text-sm leading-relaxed text-ink-soft">{product.pairing}</p>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">{product.pairing}</p>
             </div>
 
             <button
