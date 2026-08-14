@@ -11,6 +11,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
   const router = useRouter();
   const [panel, setPanel] = useState<"none" | "create" | Product>("none");
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -19,12 +20,17 @@ export function AdminDashboard({ products }: { products: Product[] }) {
     router.refresh();
   };
 
+  const closeDeleteModal = () => {
+    setDeleteTarget(null);
+    setDeleteConfirmText("");
+  };
+
   const confirmDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || deleteConfirmText !== deleteTarget.title) return;
     setDeleting(true);
     try {
       await fetch(`/api/admin/products/${deleteTarget.id}`, { method: "DELETE" });
-      setDeleteTarget(null);
+      closeDeleteModal();
       router.refresh();
     } finally {
       setDeleting(false);
@@ -146,26 +152,35 @@ export function AdminDashboard({ products }: { products: Product[] }) {
       {deleteTarget && (
         <div
           role="presentation"
-          onClick={(e) => e.target === e.currentTarget && setDeleteTarget(null)}
+          onClick={(e) => e.target === e.currentTarget && closeDeleteModal()}
           className="fixed inset-0 z-[80] flex items-center justify-center bg-[rgba(18,22,20,0.55)] p-5"
         >
           <div role="dialog" aria-modal="true" className="w-full max-w-sm rounded-2xl bg-surface p-6">
             <h3 className="text-lg font-extrabold">¿Eliminar esta prenda?</h3>
             <p className="mt-2 text-sm text-ink-soft">
-              &quot;{deleteTarget.title}&quot; se eliminará del catálogo. Esta acción no se puede deshacer.
+              Esta acción no se puede deshacer. Escribe{" "}
+              <span className="font-bold text-ink">&quot;{deleteTarget.title}&quot;</span> para confirmar.
             </p>
+            <input
+              type="text"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder={deleteTarget.title}
+              autoFocus
+              className="mt-3 w-full rounded-lg border border-line-strong bg-bg px-3 py-2 text-sm outline-none focus:border-ink"
+            />
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
                 onClick={confirmDelete}
-                disabled={deleting}
+                disabled={deleting || deleteConfirmText !== deleteTarget.title}
                 className="rounded-full bg-terracotta px-5 py-2.5 text-sm font-bold text-white hover:brightness-95 disabled:opacity-60"
               >
                 {deleting ? "Eliminando…" : "Eliminar"}
               </button>
               <button
                 type="button"
-                onClick={() => setDeleteTarget(null)}
+                onClick={closeDeleteModal}
                 className="rounded-full border border-line-strong px-5 py-2.5 text-sm font-bold hover:border-ink"
               >
                 Cancelar
