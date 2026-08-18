@@ -80,6 +80,8 @@ export function ProductForm({
   };
 
   const removeImage = (url: string) => setImages((prev) => prev.filter((u) => u !== url));
+  const makeCoverImage = (url: string) =>
+    setImages((prev) => [url, ...prev.filter((u) => u !== url)]);
 
   const addMeasureRow = () => setMeasureRows((rows) => [...rows, { label: "", value: "" }]);
   const removeMeasureRow = (index: number) =>
@@ -298,10 +300,26 @@ export function ProductForm({
 
       <div className="mt-5">
         <span className="text-sm font-semibold">Fotos (hasta 6)</span>
+        <p className="mt-1 text-xs text-ink-faint">
+          La primera foto es la portada que se ve en el catálogo. Haz clic en una foto para hacerla portada.
+        </p>
         <div className="mt-2 flex flex-wrap gap-3">
-          {images.map((url) => (
+          {images.map((url, index) => (
             <div key={url} className="relative h-20 w-20 overflow-hidden rounded-lg bg-surface-2">
-              <Image src={url} alt="" fill sizes="80px" className="object-cover" />
+              <button
+                type="button"
+                onClick={() => makeCoverImage(url)}
+                disabled={index === 0}
+                aria-label={index === 0 ? "Portada actual" : "Hacer portada"}
+                className="h-full w-full"
+              >
+                <Image src={url} alt="" fill sizes="80px" className="object-cover" />
+              </button>
+              {index === 0 && (
+                <span className="absolute bottom-0 left-0 right-0 bg-ink/80 py-0.5 text-center text-[0.6rem] font-semibold text-white">
+                  Portada
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => removeImage(url)}
