@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
 import { createProduct } from "@/lib/products";
 import { productSchema } from "@/lib/validation";
@@ -17,5 +18,6 @@ export async function POST(request: Request) {
     ...parsed.data,
     originalPrice: parsed.data.originalPrice ?? null,
   });
+  revalidatePath("/");
   return NextResponse.json({ product }, { status: 201 });
 }
