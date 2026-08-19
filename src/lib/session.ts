@@ -35,16 +35,6 @@ export async function destroySession() {
   cookieStore.delete(COOKIE_NAME);
 }
 
-/** Edge-cheap check: is this a validly-signed, unexpired session token? Used by proxy.ts. */
-export async function verifySessionToken(token: string): Promise<boolean> {
-  try {
-    await jwtVerify(token, getSecretKey());
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 const CURRENT_USER_SELECT = {
   id: true,
   name: true,
@@ -77,5 +67,3 @@ export const getCurrentUser = cache(async () => {
 export function isAdmin(user: { role: string } | null) {
   return user?.role === "admin";
 }
-
-export const SESSION_COOKIE_NAME = COOKIE_NAME;

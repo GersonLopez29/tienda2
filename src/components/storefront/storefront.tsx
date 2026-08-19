@@ -167,14 +167,12 @@ export function Storefront({
               />
             </form>
             <div className="ml-auto flex items-center gap-2">
-              {currentUser && (
-                <Link
-                  href="/mis-prendas"
-                  className="hidden whitespace-nowrap rounded-full border border-line bg-surface-2 px-4 py-2.5 text-sm font-semibold hover:bg-olive-wash hover:border-olive-soft sm:block"
-                >
-                  Mis prendas
-                </Link>
-              )}
+              <Link
+                href="/mis-prendas"
+                className="hidden whitespace-nowrap rounded-full border border-line bg-surface-2 px-4 py-2.5 text-sm font-semibold hover:bg-olive-wash hover:border-olive-soft sm:block"
+              >
+                {currentUser ? "Mis prendas" : "Vender"}
+              </Link>
               <button
                 type="button"
                 onClick={() => setFilterOpen((v) => !v)}
@@ -537,6 +535,7 @@ export function Storefront({
       <CartDrawer
         open={cartOpen}
         groups={cartGroups}
+        isLoggedIn={currentUser != null}
         onClose={() => setCartOpen(false)}
         onInc={incInCart}
         onDec={decInCart}

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { BagIcon, MinusIcon, PlusIcon, TrashIcon, WhatsappIcon, XIcon } from "@/components/icons";
 import type { Product } from "@/lib/types";
 
@@ -14,6 +15,7 @@ export type SellerGroup = {
 export function CartDrawer({
   open,
   groups,
+  isLoggedIn,
   onClose,
   onInc,
   onDec,
@@ -21,15 +23,21 @@ export function CartDrawer({
 }: {
   open: boolean;
   groups: SellerGroup[];
+  isLoggedIn: boolean;
   onClose: () => void;
   onInc: (id: string) => void;
   onDec: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
+  const router = useRouter();
   const grandTotal = groups.reduce((sum, g) => sum + g.subtotal, 0);
   const isEmpty = groups.length === 0;
 
   const checkoutWithSeller = (group: SellerGroup) => {
+    if (!isLoggedIn) {
+      router.push("/login?next=%2F");
+      return;
+    }
     const message = [
       `Hola ${group.seller.name}! Quiero comprar estas prendas de K&N'Store:`,
       ...group.lines.map(
@@ -152,7 +160,7 @@ export function CartDrawer({
                   className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full bg-[#3f6c4b] py-3 text-sm font-bold text-white hover:brightness-95"
                 >
                   <WhatsappIcon className="h-4 w-4" />
-                  Finalizar compra con {group.seller.name}
+                  {isLoggedIn ? `Finalizar compra con ${group.seller.name}` : "Iniciá sesión para comprar"}
                 </button>
               </div>
             ))
