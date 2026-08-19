@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { PencilIcon, PlusIcon, TrashIcon } from "@/components/icons";
+import { PencilIcon, PlusIcon, TagIcon, TrashIcon } from "@/components/icons";
 import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductForm } from "@/components/admin/product-form";
 
@@ -14,6 +14,21 @@ export function AdminDashboard({ products }: { products: Product[] }) {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [togglingSoldId, setTogglingSoldId] = useState<string | null>(null);
+
+  const toggleSold = async (product: Product) => {
+    setTogglingSoldId(product.id);
+    try {
+      await fetch(`/api/admin/products/${product.id}/sold`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sold: !product.sold }),
+      });
+      router.refresh();
+    } finally {
+      setTogglingSoldId(null);
+    }
+  };
 
   const refresh = () => {
     setPanel("none");
@@ -141,7 +156,14 @@ export function AdminDashboard({ products }: { products: Product[] }) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold">{product.title}</p>
+                  <p className="flex items-center gap-2 truncate text-sm font-bold">
+                    {product.title}
+                    {product.sold && (
+                      <span className="flex-none rounded-full bg-ink px-2 py-0.5 text-[0.65rem] font-bold text-surface">
+                        Vendido
+                      </span>
+                    )}
+                  </p>
                   <p className="text-xs text-ink-faint">
                     {product.brand} · {CATEGORY_LABEL[product.category]} · Talla {product.size} ·{" "}
                     {CONDITION_LABEL[product.condition]}
@@ -154,6 +176,19 @@ export function AdminDashboard({ products }: { products: Product[] }) {
                   <p className="fvnum text-sm font-bold">S/ {product.price}</p>
                 </div>
                 <div className="flex flex-none items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => toggleSold(product)}
+                    disabled={togglingSoldId === product.id}
+                    aria-label={product.sold ? `Marcar ${product.title} como disponible` : `Marcar ${product.title} como vendida`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full border text-ink-soft disabled:opacity-60 ${
+                      product.sold
+                        ? "border-olive bg-olive-wash text-olive-ink"
+                        : "border-line-strong hover:border-olive hover:text-olive-ink"
+                    }`}
+                  >
+                    <TagIcon className="h-4 w-4" />
+                  </button>
                   <button
                     type="button"
                     onClick={() => setPanel(product)}

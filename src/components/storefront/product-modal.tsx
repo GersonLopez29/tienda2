@@ -107,6 +107,11 @@ export function ProductModal({
               <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
                 {CONDITION_LABEL[product.condition]}
               </span>
+              {product.sold && (
+                <span className="rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-surface">
+                  Vendido
+                </span>
+              )}
             </div>
             <div>
               {product.originalPrice != null && (
@@ -149,10 +154,11 @@ export function ProductModal({
             <button
               type="button"
               onClick={() => onAdd(product.id)}
-              className="mt-1 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-3.5 text-sm font-bold text-surface hover:bg-olive"
+              disabled={product.sold}
+              className="mt-1 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-3.5 text-sm font-bold text-surface hover:bg-olive disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-ink"
             >
               <BagIcon className="h-4 w-4" />
-              Añadir al carrito
+              {product.sold ? "Ya vendida" : "Añadir al carrito"}
             </button>
           </div>
         </div>

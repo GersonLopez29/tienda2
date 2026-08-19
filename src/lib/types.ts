@@ -14,6 +14,7 @@ export type Product = {
   pairing: string;
   measurements: Record<string, number>;
   images: string[];
+  sold: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

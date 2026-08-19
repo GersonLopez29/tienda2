@@ -33,6 +33,7 @@ model Product {
   pairing       String     @db.Text
   measurements  Json
   images        String[]   @default([])
+  sold          Boolean    @default(false)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }

@@ -18,10 +18,11 @@ import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine } from "@/components/storefront/cart-drawer";
+import { useFavorites } from "@/lib/use-favorites";
 
 const WHATSAPP_NUMBER = "51999999999"; // reemplaza por el número real de la tienda
 
-const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Ofertas"] as const;
+const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Ofertas", "Favoritos"] as const;
 type CategoryFilter = (typeof CATEGORIES)[number];
 
 const SIZES = ["S", "M", "L"];
@@ -41,11 +42,18 @@ export function Storefront({ products }: { products: Product[] }) {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const { favorites, toggleFavorite } = useFavorites();
 
   const visibleProducts = useMemo(() => {
     return products.filter((p) => {
       if (category === "Ofertas" && p.originalPrice == null) return false;
-      if (category !== "Todos" && category !== "Ofertas" && CATEGORY_LABEL[p.category] !== category)
+      if (category === "Favoritos" && !favorites.has(p.id)) return false;
+      if (
+        category !== "Todos" &&
+        category !== "Ofertas" &&
+        category !== "Favoritos" &&
+        CATEGORY_LABEL[p.category] !== category
+      )
         return false;
       if (sizes.size && !sizes.has(p.size)) return false;
       if (conditions.size && !conditions.has(p.condition)) return false;
@@ -55,7 +63,7 @@ export function Storefront({ products }: { products: Product[] }) {
       }
       return true;
     });
-  }, [products, category, sizes, conditions, search]);
+  }, [products, category, sizes, conditions, search, favorites]);
 
   const cartLines: CartLine[] = useMemo(
     () =>
@@ -370,7 +378,14 @@ export function Storefront({ products }: { products: Product[] }) {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {visibleProducts.map((p) => (
-                <ProductCard key={p.id} product={p} onAdd={addToCart} onPreview={setPreviewId} />
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  onAdd={addToCart}
+                  onPreview={setPreviewId}
+                  isFavorite={favorites.has(p.id)}
+                  onToggleFavorite={toggleFavorite}
+                />
               ))}
             </div>
           )}

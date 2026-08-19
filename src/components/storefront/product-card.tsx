@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { BagIcon, EyeIcon } from "@/components/icons";
+import Link from "next/link";
+import { BagIcon, EyeIcon, HeartIcon } from "@/components/icons";
 import { CONDITION_LABEL, type Product } from "@/lib/types";
 
 const CONDITION_STYLE: Record<Product["condition"], string> = {
@@ -12,10 +13,14 @@ export function ProductCard({
   product,
   onAdd,
   onPreview,
+  isFavorite,
+  onToggleFavorite,
 }: {
   product: Product;
   onAdd: (id: string) => void;
   onPreview: (id: string) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }) {
   const isOffer = product.originalPrice != null;
   const cover = product.images[0];
@@ -36,15 +41,32 @@ export function ProductCard({
             Sin foto
           </div>
         )}
-        {isOffer && (
-          <span className="absolute left-0 top-0 rounded-br-[10px] bg-terracotta px-2.5 py-1 text-[0.66rem] font-bold text-white">
-            OFERTA
+        {product.sold ? (
+          <span className="absolute left-0 top-0 rounded-br-[10px] bg-ink px-2.5 py-1 text-[0.66rem] font-bold text-surface">
+            VENDIDO
           </span>
+        ) : (
+          isOffer && (
+            <span className="absolute left-0 top-0 rounded-br-[10px] bg-terracotta px-2.5 py-1 text-[0.66rem] font-bold text-white">
+              OFERTA
+            </span>
+          )
         )}
+        <button
+          type="button"
+          onClick={() => onToggleFavorite(product.id)}
+          aria-label={isFavorite ? `Quitar ${product.title} de favoritos` : `Añadir ${product.title} a favoritos`}
+          aria-pressed={isFavorite}
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-surface/90 text-ink-soft backdrop-blur hover:text-terracotta"
+        >
+          <HeartIcon className="h-4 w-4" filled={isFavorite} />
+        </button>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <p className="text-xs text-ink-faint">{product.brand}</p>
-        <h3 className="text-[0.98rem] font-bold leading-tight text-balance">{product.title}</h3>
+        <Link href={`/producto/${product.id}`} className="hover:underline">
+          <h3 className="text-[0.98rem] font-bold leading-tight text-balance">{product.title}</h3>
+        </Link>
         <div className="mt-0.5 flex flex-wrap gap-1.5">
           <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
             Talla {product.size}
@@ -74,10 +96,11 @@ export function ProductCard({
             <button
               type="button"
               onClick={() => onAdd(product.id)}
-              className="flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-xs font-bold text-surface hover:bg-olive"
+              disabled={product.sold}
+              className="flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-xs font-bold text-surface hover:bg-olive disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-ink"
             >
               <BagIcon className="h-3.5 w-3.5" />
-              Añadir
+              {product.sold ? "Vendida" : "Añadir"}
             </button>
           </div>
         </div>
