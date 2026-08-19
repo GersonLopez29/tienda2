@@ -20,7 +20,7 @@ import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine } from "@/components/storefront/cart-drawer";
 import { useFavorites } from "@/lib/use-favorites";
 
-const WHATSAPP_NUMBER = "51999999999"; // reemplaza por el número real de la tienda
+const WHATSAPP_NUMBER = "51941809900";
 
 const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Ofertas", "Favoritos"] as const;
 type CategoryFilter = (typeof CATEGORIES)[number];

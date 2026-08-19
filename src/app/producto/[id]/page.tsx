@@ -6,7 +6,7 @@ import { getProductById } from "@/lib/products";
 import { CONDITION_LABEL, type Product } from "@/lib/types";
 import { WhatsappIcon } from "@/components/icons";
 
-const WHATSAPP_NUMBER = "51999999999"; // reemplaza por el número real de la tienda
+const WHATSAPP_NUMBER = "51941809900";
 
 export async function generateMetadata({
   params,
