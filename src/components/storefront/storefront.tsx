@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -42,7 +42,14 @@ export function Storefront({ products }: { products: Product[] }) {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const { favorites, toggleFavorite } = useFavorites();
+
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(null), 2500);
+    return () => clearTimeout(t);
+  }, [notice]);
 
   const visibleProducts = useMemo(() => {
     return products.filter((p) => {
@@ -78,7 +85,13 @@ export function Storefront({ products }: { products: Product[] }) {
   const cartTotal = cartLines.reduce((sum, l) => sum + l.product.price * l.qty, 0);
   const cartQty = cartLines.reduce((sum, l) => sum + l.qty, 0);
 
-  const addToCart = (id: string) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+  const addToCart = (id: string) => {
+    if (cart[id]) {
+      setNotice("Ya agregaste esta prenda a tu carrito — es única, no hay más unidades.");
+      return;
+    }
+    setCart((c) => ({ ...c, [id]: 1 }));
+  };
   const incInCart = addToCart;
   const decInCart = (id: string) =>
     setCart((c) => {
@@ -495,6 +508,14 @@ export function Storefront({ products }: { products: Product[] }) {
         onDec={decInCart}
         onRemove={removeFromCart}
       />
+      {notice && (
+        <div
+          role="status"
+          className="fixed left-1/2 top-4 z-[100] -translate-x-1/2 rounded-full bg-ink px-5 py-2.5 text-center text-sm font-semibold text-surface shadow-[0_10px_30px_-8px_rgba(46,42,34,0.4)]"
+        >
+          {notice}
+        </div>
+      )}
     </>
   );
 }
