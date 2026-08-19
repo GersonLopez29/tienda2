@@ -34,6 +34,43 @@ model Product {
   measurements  Json
   images        String[]   @default([])
   sold          Boolean    @default(false)
+  sellerId      String
+  seller        User       @relation(fields: [sellerId], references: [id])
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+}
+
+model User {
+  id                         String    @id @default(cuid())
+  name                       String
+  email                      String    @unique
+  passwordHash               String
+  whatsapp                   String
+  role                       String    @default("user")
+  isBlocked                  Boolean   @default(false)
+  failedLoginAttempts        Int       @default(0)
+  lockedUntil                DateTime?
+  emailVerified              Boolean   @default(false)
+  verificationToken          String?   @unique
+  verificationTokenExpiresAt DateTime?
+  resetToken                 String?   @unique
+  resetTokenExpiresAt        DateTime?
+  createdAt                  DateTime  @default(now())
+  products                   Product[]
+}
+
+model RegistrationAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+}
+
+model PasswordResetAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
 }

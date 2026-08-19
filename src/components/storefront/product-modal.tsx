@@ -96,7 +96,9 @@ export function ProductModal({
             )}
           </div>
           <div className="flex min-w-0 flex-col gap-4 p-7">
-            <p className="text-xs text-ink-faint">{product.brand}</p>
+            <p className="text-xs text-ink-faint">
+              {product.brand} · Vendido por {product.seller.name}
+            </p>
             <h3 id="modal-title" className="text-2xl font-extrabold leading-tight text-balance">
               {product.title}
             </h3>

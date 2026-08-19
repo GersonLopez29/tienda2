@@ -15,6 +15,7 @@ export type Product = {
   measurements: Record<string, number>;
   images: string[];
   sold: boolean;
+  seller: { id: string; name: string; whatsapp: string };
   createdAt: Date;
   updatedAt: Date;
 };

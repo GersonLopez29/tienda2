@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { PencilIcon, PlusIcon, TagIcon, TrashIcon } from "@/components/icons";
 import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
-import { ProductForm } from "@/components/admin/product-form";
+import { ProductForm } from "@/components/seller/product-form";
 
-export function AdminDashboard({ products }: { products: Product[] }) {
+export function SellerDashboard({ products }: { products: Product[] }) {
   const router = useRouter();
   const [panel, setPanel] = useState<"none" | "create" | Product>("none");
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -19,7 +19,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
   const toggleSold = async (product: Product) => {
     setTogglingSoldId(product.id);
     try {
-      await fetch(`/api/admin/products/${product.id}/sold`, {
+      await fetch(`/api/products/${product.id}/sold`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sold: !product.sold }),
@@ -44,7 +44,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
     if (!deleteTarget || deleteConfirmText !== deleteTarget.title) return;
     setDeleting(true);
     try {
-      await fetch(`/api/admin/products/${deleteTarget.id}`, { method: "DELETE" });
+      await fetch(`/api/products/${deleteTarget.id}`, { method: "DELETE" });
       closeDeleteModal();
       router.refresh();
     } finally {
@@ -55,7 +55,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
   const logout = async () => {
     setLoggingOut(true);
     await fetch("/api/auth/logout", { method: "POST" });
-    router.replace("/admin/login");
+    router.replace("/login");
     router.refresh();
   };
 
@@ -65,7 +65,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
         <div className="mx-auto flex max-w-[1100px] items-center justify-between px-4 py-5 sm:px-6">
           <div>
             <p className="text-xs text-ink-faint">K&N'Store</p>
-            <h1 className="text-lg font-extrabold">Panel de administrador</h1>
+            <h1 className="text-lg font-extrabold">Mis prendas</h1>
           </div>
           <div className="flex items-center gap-3">
             <a href="/" className="text-sm font-semibold text-olive-ink hover:underline">
@@ -138,7 +138,7 @@ export function AdminDashboard({ products }: { products: Product[] }) {
           <div className="flex flex-col gap-3">
             {products.length === 0 && (
               <p className="rounded-2xl border border-dashed border-line-strong bg-surface p-8 text-center text-ink-soft">
-                Todavía no hay prendas publicadas. Crea la primera con &quot;Nueva prenda&quot;.
+                Todavía no publicaste ninguna prenda. Crea la primera con &quot;Nueva prenda&quot;.
               </p>
             )}
             {products.map((product) => (

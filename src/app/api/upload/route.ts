@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireUser } from "@/lib/require-user";
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
 export async function POST(request: Request) {
-  const unauthorized = await requireAdmin();
+  const { unauthorized } = await requireUser();
   if (unauthorized) return unauthorized;
 
   const formData = await request.formData().catch(() => null);

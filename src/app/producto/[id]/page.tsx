@@ -6,8 +6,6 @@ import { getProductById } from "@/lib/products";
 import { CONDITION_LABEL, type Product } from "@/lib/types";
 import { WhatsappIcon } from "@/components/icons";
 
-const WHATSAPP_NUMBER = "51941809900";
-
 export async function generateMetadata({
   params,
 }: PageProps<"/producto/[id]">): Promise<Metadata> {
@@ -29,8 +27,8 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
   const product = await getProductById(id);
   if (!product) notFound();
 
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hola! Me interesa esta prenda: ${product.title} (S/ ${product.price})`
+  const whatsappHref = `https://wa.me/${product.seller.whatsapp}?text=${encodeURIComponent(
+    `Hola ${product.seller.name}! Me interesa esta prenda: ${product.title} (S/ ${product.price})`
   )}`;
 
   return (
@@ -47,6 +45,7 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
           <h1 className="text-2xl font-extrabold leading-tight text-balance sm:text-3xl">
             {product.title}
           </h1>
+          <p className="text-xs text-ink-faint">Vendido por {product.seller.name}</p>
           <div className="flex flex-wrap gap-1.5">
             <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
               Talla {product.size}

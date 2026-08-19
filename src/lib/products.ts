@@ -19,16 +19,32 @@ export type ProductInput = {
   images: string[];
 };
 
+const SELLER_SELECT = { id: true, name: true, whatsapp: true } as const;
+
 export function getAllProducts() {
-  return prisma.product.findMany({ orderBy: { createdAt: "desc" } });
+  return prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { seller: { select: SELLER_SELECT } },
+  });
 }
 
 export function getProductById(id: string) {
-  return prisma.product.findUnique({ where: { id } });
+  return prisma.product.findUnique({
+    where: { id },
+    include: { seller: { select: SELLER_SELECT } },
+  });
 }
 
-export function createProduct(data: ProductInput) {
-  return prisma.product.create({ data });
+export function getProductsBySeller(sellerId: string) {
+  return prisma.product.findMany({
+    where: { sellerId },
+    orderBy: { createdAt: "desc" },
+    include: { seller: { select: SELLER_SELECT } },
+  });
+}
+
+export function createProduct(data: ProductInput, sellerId: string) {
+  return prisma.product.create({ data: { ...data, sellerId } });
 }
 
 export function updateProduct(id: string, data: ProductInput) {

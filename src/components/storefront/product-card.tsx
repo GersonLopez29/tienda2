@@ -63,7 +63,9 @@ export function ProductCard({
         </button>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <p className="text-xs text-ink-faint">{product.brand}</p>
+        <p className="text-xs text-ink-faint">
+          {product.brand} · Vendido por {product.seller.name}
+        </p>
         <Link href={`/producto/${product.id}`} className="hover:underline">
           <h3 className="text-[0.98rem] font-bold leading-tight text-balance">{product.title}</h3>
         </Link>

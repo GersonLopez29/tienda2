@@ -60,7 +60,16 @@ async function main() {
     console.log(`Ya hay ${existing} prendas en la base — no se agregan ejemplos.`);
     return prisma;
   }
-  await prisma.product.createMany({ data: SAMPLE_PRODUCTS });
+
+  const seller = await prisma.user.findFirst({ where: { role: "admin" } });
+  if (!seller) {
+    console.log("No hay un usuario admin todavía — corré prisma/scripts/backfill-admin-seller.ts primero.");
+    return prisma;
+  }
+
+  await prisma.product.createMany({
+    data: SAMPLE_PRODUCTS.map((p) => ({ ...p, sellerId: seller.id })),
+  });
   console.log(`Sembradas ${SAMPLE_PRODUCTS.length} prendas de ejemplo.`);
   return prisma;
 }

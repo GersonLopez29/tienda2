@@ -1,6 +1,8 @@
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { cache } from "react";
+import { prisma } from "@/lib/db";
 
 const COOKIE_NAME = "refit_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days
@@ -11,8 +13,8 @@ function getSecretKey() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSession(email: string) {
-  const token = await new SignJWT({ email, role: "admin" })
+export async function createSession(userId: string) {
+  const token = await new SignJWT({ userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
@@ -33,26 +35,47 @@ export async function destroySession() {
   cookieStore.delete(COOKIE_NAME);
 }
 
-export async function getSession(): Promise<{ email: string } | null> {
+/** Edge-cheap check: is this a validly-signed, unexpired session token? Used by proxy.ts. */
+export async function verifySessionToken(token: string): Promise<boolean> {
+  try {
+    await jwtVerify(token, getSecretKey());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const CURRENT_USER_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  whatsapp: true,
+  role: true,
+  isBlocked: true,
+  emailVerified: true,
+} as const;
+
+export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
+
+/** DB-backed, per-request-memoized: the real source of truth for role/isBlocked/emailVerified. */
+export const getCurrentUser = cache(async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
-    if (payload.role !== "admin" || typeof payload.email !== "string") return null;
-    return { email: payload.email };
+    const userId = payload.userId;
+    if (typeof userId !== "string") return null;
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: CURRENT_USER_SELECT });
+    if (!user || user.isBlocked) return null;
+    return user;
   } catch {
     return null;
   }
-}
+});
 
-export async function verifySessionToken(token: string): Promise<boolean> {
-  try {
-    const { payload } = await jwtVerify(token, getSecretKey());
-    return payload.role === "admin";
-  } catch {
-    return false;
-  }
+export function isAdmin(user: { role: string } | null) {
+  return user?.role === "admin";
 }
 
 export const SESSION_COOKIE_NAME = COOKIE_NAME;

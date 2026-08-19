@@ -17,10 +17,8 @@ import {
 import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
-import { CartDrawer, type CartLine } from "@/components/storefront/cart-drawer";
+import { CartDrawer, type CartLine, type SellerGroup } from "@/components/storefront/cart-drawer";
 import { useFavorites } from "@/lib/use-favorites";
-
-const WHATSAPP_NUMBER = "51941809900";
 
 const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Ofertas", "Favoritos"] as const;
 type CategoryFilter = (typeof CATEGORIES)[number];
@@ -33,7 +31,13 @@ const CONDITION_CHIP_LABEL: Record<Product["condition"], string> = {
   VINTAGE: "Vintage",
 };
 
-export function Storefront({ products }: { products: Product[] }) {
+export function Storefront({
+  products,
+  currentUser,
+}: {
+  products: Product[];
+  currentUser: { name: string; isAdmin: boolean } | null;
+}) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
   const [sizes, setSizes] = useState<Set<string>>(new Set());
   const [conditions, setConditions] = useState<Set<Product["condition"]>>(new Set());
@@ -82,8 +86,19 @@ export function Storefront({ products }: { products: Product[] }) {
         .filter((l): l is CartLine => l != null),
     [cart, products]
   );
-  const cartTotal = cartLines.reduce((sum, l) => sum + l.product.price * l.qty, 0);
   const cartQty = cartLines.reduce((sum, l) => sum + l.qty, 0);
+
+  const cartGroups: SellerGroup[] = useMemo(() => {
+    const bySeller = new Map<string, SellerGroup>();
+    for (const line of cartLines) {
+      const seller = line.product.seller;
+      const group = bySeller.get(seller.id) ?? { seller, lines: [], subtotal: 0 };
+      group.lines.push(line);
+      group.subtotal += line.product.price * line.qty;
+      bySeller.set(seller.id, group);
+    }
+    return [...bySeller.values()];
+  }, [cartLines]);
 
   const addToCart = (id: string) => {
     if (cart[id]) {
@@ -152,6 +167,14 @@ export function Storefront({ products }: { products: Product[] }) {
               />
             </form>
             <div className="ml-auto flex items-center gap-2">
+              {currentUser && (
+                <Link
+                  href="/mis-prendas"
+                  className="hidden whitespace-nowrap rounded-full border border-line bg-surface-2 px-4 py-2.5 text-sm font-semibold hover:bg-olive-wash hover:border-olive-soft sm:block"
+                >
+                  Mis prendas
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => setFilterOpen((v) => !v)}
@@ -491,18 +514,29 @@ export function Storefront({ products }: { products: Product[] }) {
         </div>
         <div className="mx-auto mt-11 max-w-[1280px] border-t border-white/10 px-4 pt-5 text-center text-xs text-[#8a8272] sm:px-6 lg:px-10">
           © {new Date().getFullYear()} K&N'Store — hecho con ropa que ya tenía una historia.
-          <Link href="/admin" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
-            Panel admin
-          </Link>
+          {currentUser ? (
+            <>
+              <Link href="/mis-prendas" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
+                Mis prendas
+              </Link>
+              {currentUser.isAdmin && (
+                <Link href="/admin" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
+                  Admin
+                </Link>
+              )}
+            </>
+          ) : (
+            <Link href="/login" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
+              Iniciar sesión
+            </Link>
+          )}
         </div>
       </footer>
 
       <ProductModal product={previewProduct} onClose={() => setPreviewId(null)} onAdd={addToCart} />
       <CartDrawer
         open={cartOpen}
-        lines={cartLines}
-        total={cartTotal}
-        whatsappNumber={WHATSAPP_NUMBER}
+        groups={cartGroups}
         onClose={() => setCartOpen(false)}
         onInc={incInCart}
         onDec={decInCart}

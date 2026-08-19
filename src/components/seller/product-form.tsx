@@ -67,7 +67,7 @@ export function ProductForm({
       for (const file of Array.from(files).slice(0, 6 - images.length)) {
         const body = new FormData();
         body.append("file", file);
-        const res = await fetch("/api/admin/upload", { method: "POST", body });
+        const res = await fetch("/api/upload", { method: "POST", body });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "No se pudo subir la imagen");
         setImages((prev) => [...prev, data.url as string]);
@@ -117,7 +117,7 @@ export function ProductForm({
 
     setSaving(true);
     try {
-      const url = isEdit ? `/api/admin/products/${product.id}` : "/api/admin/products";
+      const url = isEdit ? `/api/products/${product.id}` : "/api/products";
       const res = await fetch(url, {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },

@@ -21,3 +21,19 @@ export const loginSchema = z.object({
   email: z.string().trim().email(),
   password: z.string().min(1),
 });
+
+export const registerSchema = z.object({
+  name: z.string().trim().min(2, "El nombre es muy corto").max(80),
+  email: z.string().trim().toLowerCase().email(),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  whatsapp: z.string().trim().min(8, "Ingresa un WhatsApp válido").max(20),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email(),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+});

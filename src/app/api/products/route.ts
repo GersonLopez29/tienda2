@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/require-admin";
+import { requireUser } from "@/lib/require-user";
 import { createProduct } from "@/lib/products";
 import { productSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
-  const unauthorized = await requireAdmin();
+  const { user, unauthorized } = await requireUser();
   if (unauthorized) return unauthorized;
+  if (!user.emailVerified) {
+    return NextResponse.json({ error: "Verificá tu correo antes de publicar prendas" }, { status: 403 });
+  }
 
   const body = await request.json().catch(() => null);
   const parsed = productSchema.safeParse(body);
@@ -14,10 +17,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
   }
 
-  const product = await createProduct({
-    ...parsed.data,
-    originalPrice: parsed.data.originalPrice ?? null,
-  });
+  const product = await createProduct(
+    { ...parsed.data, originalPrice: parsed.data.originalPrice ?? null },
+    user.id
+  );
   revalidatePath("/");
+  revalidatePath("/mis-prendas");
   return NextResponse.json({ product }, { status: 201 });
 }

@@ -1,0 +1,118 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+type ModeratedUser = {
+  id: string;
+  name: string;
+  email: string;
+  whatsapp: string;
+  role: string;
+  isBlocked: boolean;
+  emailVerified: boolean;
+  createdAt: Date;
+};
+
+export function UserModeration({ users, currentUserId }: { users: ModeratedUser[]; currentUserId: string }) {
+  const router = useRouter();
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const toggleBlocked = async (user: ModeratedUser) => {
+    setTogglingId(user.id);
+    try {
+      await fetch(`/api/admin/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isBlocked: !user.isBlocked }),
+      });
+      router.refresh();
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
+  const logout = async () => {
+    setLoggingOut(true);
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.replace("/login");
+    router.refresh();
+  };
+
+  return (
+    <main className="min-h-screen bg-bg">
+      <header className="border-b border-line bg-surface">
+        <div className="mx-auto flex max-w-[1100px] items-center justify-between px-4 py-5 sm:px-6">
+          <div>
+            <p className="text-xs text-ink-faint">K&N'Store</p>
+            <h1 className="text-lg font-extrabold">Moderación de usuarios</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="/mis-prendas" className="text-sm font-semibold text-olive-ink hover:underline">
+              Mis prendas
+            </a>
+            <a href="/" className="text-sm font-semibold text-olive-ink hover:underline">
+              Ver tienda
+            </a>
+            <button
+              type="button"
+              onClick={logout}
+              disabled={loggingOut}
+              className="rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink disabled:opacity-60"
+            >
+              {loggingOut ? "Saliendo…" : "Cerrar sesión"}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-[1100px] px-4 py-8 sm:px-6">
+        <h2 className="mb-6 text-xl font-extrabold">Usuarios ({users.length})</h2>
+        <div className="flex flex-col gap-3">
+          {users.map((user) => (
+            <div key={user.id} className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-4">
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-2 truncate text-sm font-bold">
+                  {user.name}
+                  {user.role === "admin" && (
+                    <span className="flex-none rounded-full bg-olive px-2 py-0.5 text-[0.65rem] font-bold text-white">
+                      Admin
+                    </span>
+                  )}
+                  {!user.emailVerified && (
+                    <span className="flex-none rounded-full bg-surface-2 px-2 py-0.5 text-[0.65rem] text-ink-faint">
+                      Sin verificar
+                    </span>
+                  )}
+                  {user.isBlocked && (
+                    <span className="flex-none rounded-full bg-terracotta px-2 py-0.5 text-[0.65rem] font-bold text-white">
+                      Bloqueado
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-ink-faint">
+                  {user.email} · {user.whatsapp}
+                </p>
+              </div>
+              {user.id !== currentUserId && (
+                <button
+                  type="button"
+                  onClick={() => toggleBlocked(user)}
+                  disabled={togglingId === user.id}
+                  className={`flex-none rounded-full border px-4 py-2 text-sm font-semibold disabled:opacity-60 ${
+                    user.isBlocked
+                      ? "border-olive text-olive-ink hover:bg-olive-wash"
+                      : "border-line-strong text-ink-soft hover:border-terracotta hover:text-terracotta"
+                  }`}
+                >
+                  {user.isBlocked ? "Desbloquear" : "Bloquear"}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
