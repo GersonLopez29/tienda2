@@ -10,7 +10,7 @@ export default function Error({ retry }: { error: Error & { digest?: string }; r
         Ocurrió un error inesperado
       </h1>
       <p className="max-w-[40ch] text-ink-soft">
-        Probá de nuevo en un momento. Si el problema sigue, avisanos.
+        Prueba de nuevo en un momento. Si el problema sigue, avísanos.
       </p>
       <div className="mt-2 flex gap-3">
         <button

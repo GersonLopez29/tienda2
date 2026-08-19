@@ -44,7 +44,7 @@ export default function RegisterPage() {
         className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]"
       >
         <h1 className="text-xl font-extrabold text-olive-ink">K&N&apos;Store</h1>
-        <p className="mt-1 text-sm text-ink-soft">Creá tu cuenta para comprar o vender</p>
+        <p className="mt-1 text-sm text-ink-soft">Crea tu cuenta para comprar o vender</p>
 
         <label className="mt-6 block text-sm font-semibold" htmlFor="name">
           Nombre
@@ -117,9 +117,9 @@ export default function RegisterPage() {
         </button>
 
         <p className="mt-4 text-center text-sm text-ink-faint">
-          ¿Ya tenés cuenta?{" "}
+          ¿Ya tienes cuenta?{" "}
           <Link href="/login" className="font-semibold text-olive-ink hover:underline">
-            Ingresá
+            Ingresa
           </Link>
         </p>
       </form>

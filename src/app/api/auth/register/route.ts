@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const { allowed } = await checkAndRecordAttempt("registration", ip, 5, 60);
   if (!allowed) {
-    return NextResponse.json({ error: "Demasiados intentos. Probá de nuevo en un rato." }, { status: 429 });
+    return NextResponse.json({ error: "Demasiados intentos. Prueba de nuevo en un rato." }, { status: 429 });
   }
 
   const body = await request.json().catch(() => null);

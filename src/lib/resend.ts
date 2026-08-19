@@ -39,6 +39,6 @@ export function sendDuplicateRegistrationNotice(to: string, name: string) {
   return send(
     to,
     "Intento de registro con tu correo — K&N'Store",
-    `<p>Hola ${name},</p><p>Alguien intentó crear una cuenta nueva con tu correo en K&N'Store. Si fuiste vos, iniciá sesión normalmente o restablecé tu contraseña. Si no fuiste vos, podés ignorar este mensaje.</p>`
+    `<p>Hola ${name},</p><p>Alguien intentó crear una cuenta nueva con tu correo en K&N'Store. Si fuiste tú, inicia sesión normalmente o restablece tu contraseña. Si no fuiste tú, puedes ignorar este mensaje.</p>`
   );
 }

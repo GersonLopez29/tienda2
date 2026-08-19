@@ -11,7 +11,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
   const { id } = await params;
   if (id === user.id) {
-    return NextResponse.json({ error: "No podés bloquearte a vos mismo" }, { status: 400 });
+    return NextResponse.json({ error: "No puedes bloquearte a ti mismo" }, { status: 400 });
   }
 
   const body = await request.json().catch(() => null);

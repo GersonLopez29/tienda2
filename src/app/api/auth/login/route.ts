@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   if (!result.ok) {
     if (result.reason === "locked") {
       return NextResponse.json(
-        { error: "Cuenta bloqueada temporalmente por varios intentos fallidos. Probá de nuevo en 30 minutos." },
+        { error: "Cuenta bloqueada temporalmente por varios intentos fallidos. Prueba de nuevo en 30 minutos." },
         { status: 403 }
       );
     }

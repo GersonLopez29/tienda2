@@ -33,7 +33,7 @@ async function verify(token: string | undefined): Promise<{ message: string }> {
   if (!user) return { message: "El enlace de verificación es inválido o ya fue usado." };
   if (user.emailVerified) return { message: "Tu correo ya estaba verificado." };
   if (!user.verificationTokenExpiresAt || user.verificationTokenExpiresAt < new Date()) {
-    return { message: "El enlace de verificación venció. Volvé a pedirlo desde tu cuenta." };
+    return { message: "El enlace de verificación venció. Vuelve a pedirlo desde tu cuenta." };
   }
 
   await verifyUserEmail(user.id);

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
   const user = await getUserByResetToken(token);
   if (!user || !user.resetTokenExpiresAt || user.resetTokenExpiresAt < new Date()) {
-    return NextResponse.json({ error: "El enlace es inválido o venció. Pedí uno nuevo." }, { status: 400 });
+    return NextResponse.json({ error: "El enlace es inválido o venció. Pide uno nuevo." }, { status: 400 });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);

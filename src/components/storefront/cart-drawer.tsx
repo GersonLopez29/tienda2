@@ -160,7 +160,7 @@ export function CartDrawer({
                   className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full bg-[#3f6c4b] py-3 text-sm font-bold text-white hover:brightness-95"
                 >
                   <WhatsappIcon className="h-4 w-4" />
-                  {isLoggedIn ? `Finalizar compra con ${group.seller.name}` : "Iniciá sesión para comprar"}
+                  {isLoggedIn ? `Finalizar compra con ${group.seller.name}` : "Inicia sesión para comprar"}
                 </button>
               </div>
             ))

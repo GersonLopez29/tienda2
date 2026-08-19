@@ -50,11 +50,11 @@ function ResetPasswordForm() {
         className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]"
       >
         <h1 className="text-xl font-extrabold text-olive-ink">K&N&apos;Store</h1>
-        <p className="mt-1 text-sm text-ink-soft">Elegí una contraseña nueva</p>
+        <p className="mt-1 text-sm text-ink-soft">Elige una contraseña nueva</p>
 
         {!token && (
           <p role="alert" className="mt-4 text-sm text-terracotta-ink">
-            Falta el código del enlace. Pedí uno nuevo desde{" "}
+            Falta el código del enlace. Pide uno nuevo desde{" "}
             <Link href="/olvide-password" className="underline">
               acá
             </Link>
