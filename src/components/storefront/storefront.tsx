@@ -496,8 +496,7 @@ export function Storefront({
             </ul>
           </div>
           <div>
-            <h5 className="mb-4 text-xs tracking-wide text-[#a89e8c] uppercase">Visítanos y paga con</h5>
-            <p className="text-sm text-[#a89e8c]">Av. Ejemplo 123, local 4 — Lima, Perú (referencial, edítalo).</p>
+            <h5 className="mb-4 text-xs tracking-wide text-[#a89e8c] uppercase">Paga con</h5>
             <div className="mt-3 flex flex-wrap gap-2">
               {["Yape", "Plin", "Visa", "Mastercard"].map((m) => (
                 <span
