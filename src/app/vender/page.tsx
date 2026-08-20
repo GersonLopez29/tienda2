@@ -1,23 +1,29 @@
 import Link from "next/link";
-import { UploadIcon, TagIcon, WhatsappIcon } from "@/components/icons";
+import { WhatsappIcon } from "@/components/icons";
 
-const STEPS = [
-  {
-    icon: UploadIcon,
-    title: "Regístrate y sube tus prendas",
-    body: "Crea tu cuenta, agrega fotos, talla, estado y precio de lo que quieras vender.",
-  },
-  {
-    icon: TagIcon,
-    title: "La publicamos en la tienda",
-    body: "Tu prenda aparece en el catálogo de K&N'Store para que compradores la encuentren.",
-  },
-  {
-    icon: WhatsappIcon,
-    title: "Coordinas la venta por WhatsApp",
-    body: "Cuando alguien compra, te contacta directo por WhatsApp para coordinar entrega y pago.",
-  },
-];
+const CONTENT = `💌 ¡Hola! Bienvenida a KyN Store,
+donde tus prendas pueden tener una nueva historia 💕
+
+Si quieres vender tu ropa con nosotras, así funciona:
+
+1. Aceptamos de 10 a 25 prendas o accesorios en buen estado.
+2. 📸 Mándanos fotos y videos claros de cada prenda para su selección al 992955792.
+3. 🧾 Crea una lista (Excel o nota) con:
+– Número o nombre de la prenda
+– Precio mínimo y máximo 💵
+(Seleccionamos el precio juntas)
+4. 📦 Coordinamos el recojo o envío,
+y tus prendas estarán activas por 3 semanas.
+Nosotras nos encargamos de toda la gestión:
+venta, atención, empaquetado y entregas tanto en Lima como en provincia 🤍
+
+💸 La ganancia para nosotros es el 20% sobre la venta final de la prenda
+y te vamos transfiriendo conforme se vendan las prendas.
+
+Si alguna prenda no se vende,
+puedes decidir si deseas recuperarla o donarla 💫
+
+✨ Así de fácil es reLovear y darle nueva vida a tu closet 🌸`;
 
 export default function VenderPage() {
   const whatsappHref = `https://wa.me/${process.env.ADMIN_WHATSAPP}?text=${encodeURIComponent(
@@ -29,33 +35,9 @@ export default function VenderPage() {
       <div className="mx-auto max-w-[640px]">
         <p className="text-xs text-ink-faint">K&N&apos;Store</p>
         <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">Cómo funciona vender</h1>
-        <p className="mt-3 text-ink-soft">
-          Dale segunda vida a la ropa que ya no usas. Así de simple es publicar y vender en la
-          tienda.
-        </p>
 
-        <div className="mt-8 flex flex-col gap-4">
-          {STEPS.map(({ icon: Icon, title, body }, i) => (
-            <div key={title} className="flex gap-4 rounded-2xl border border-line bg-surface p-5">
-              <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-mustard/15 text-mustard">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-bold">
-                  {i + 1}. {title}
-                </p>
-                <p className="mt-1 text-sm text-ink-soft">{body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-line bg-surface p-5">
-          <p className="text-sm font-bold">Comisión</p>
-          <p className="mt-1 text-sm text-ink-soft">
-            Cobramos una comisión del 20% sobre el precio de venta cuando tu prenda se vende. El
-            resto es para ti.
-          </p>
+        <div className="mt-6 rounded-2xl border border-line bg-surface p-6 whitespace-pre-line text-sm leading-relaxed text-ink-soft">
+          {CONTENT}
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
