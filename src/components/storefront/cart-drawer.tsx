@@ -34,6 +34,8 @@ export function CartDrawer({
 }) {
   const router = useRouter();
   const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle");
+  const [checkedOut, setCheckedOut] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const grandTotal = groups.reduce((sum, g) => sum + g.subtotal, 0);
   const isEmpty = groups.length === 0;
 
@@ -67,6 +69,14 @@ export function CartDrawer({
       "_blank",
       "noopener"
     );
+    setCheckedOut(true);
+  };
+
+  const logout = async () => {
+    setLoggingOut(true);
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
   };
 
   return (
@@ -209,6 +219,16 @@ export function CartDrawer({
             <p className="text-center text-xs text-ink-faint">
               Cada vendedor recibe su propio pedido por WhatsApp.
             </p>
+            {checkedOut && (
+              <button
+                type="button"
+                onClick={logout}
+                disabled={loggingOut}
+                className="mt-3 w-full text-center text-xs font-semibold text-ink-faint underline underline-offset-4 hover:text-ink disabled:opacity-60"
+              >
+                {loggingOut ? "Saliendo…" : "Ya terminé — cerrar sesión"}
+              </button>
+            )}
           </div>
         )}
       </aside>
