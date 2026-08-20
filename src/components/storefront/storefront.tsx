@@ -330,7 +330,7 @@ export function Storefront({
               ¿Tienes ropa parada en tu closet? Dále segunda vida aquí.
             </span>
             <Link
-              href="/registro"
+              href="/vender"
               className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-olive-ink hover:brightness-95"
             >
               Entérate cómo podemos ayudarte a venderla
