@@ -69,3 +69,7 @@ export function listUsers() {
 export function setUserBlocked(id: string, isBlocked: boolean) {
   return prisma.user.update({ where: { id }, data: { isBlocked } });
 }
+
+export function deleteUser(id: string) {
+  return prisma.user.delete({ where: { id } });
+}
