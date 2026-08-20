@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   BagIcon,
   DropletIcon,
@@ -50,7 +51,30 @@ export function Storefront({
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [sellBannerOpen, setSellBannerOpen] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
   const { favorites, toggleFavorite } = useFavorites();
+  const router = useRouter();
+
+  const logout = async () => {
+    setLoggingOut(true);
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !currentUser) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("welcome") !== "1") return;
+    window.history.replaceState(null, "", "/");
+    // Reads a one-time URL flag set by the login/registro redirect — a
+    // legitimate effect-time setState, not state derivable from props.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNotice(`¡Bienvenido/a, ${currentUser.name.split(" ")[0]}!`);
+    // Intentionally runs once on mount only — re-running on currentUser
+    // identity changes would be a no-op anyway since the URL flag is gone.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!notice) return;
@@ -145,6 +169,21 @@ export function Storefront({
             <span className="font-[Arial_Black] text-2xl font-extrabold text-olive-ink">
               K&N'Store
             </span>
+            {currentUser && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="max-w-[140px] truncate font-semibold text-ink-soft">
+                  Hola, {currentUser.name.split(" ")[0]}
+                </span>
+                <button
+                  type="button"
+                  onClick={logout}
+                  disabled={loggingOut}
+                  className="whitespace-nowrap rounded-full border border-line-strong px-3 py-1.5 text-xs font-semibold hover:border-ink disabled:opacity-60"
+                >
+                  {loggingOut ? "Saliendo…" : "Cerrar sesión"}
+                </button>
+              </div>
+            )}
             <form
               onSubmit={(e) => e.preventDefault()}
               className="hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-line bg-surface-2 px-4 py-2.5 sm:flex"

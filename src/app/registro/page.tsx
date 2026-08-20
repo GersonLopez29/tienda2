@@ -28,7 +28,7 @@ export default function RegisterPage() {
         setError(data.error ?? "No se pudo crear la cuenta");
         return;
       }
-      router.replace("/");
+      router.replace("/?welcome=1");
       router.refresh();
     } catch {
       setError("Error de conexión. Intenta de nuevo.");

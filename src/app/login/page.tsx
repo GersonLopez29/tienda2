@@ -41,7 +41,8 @@ function LoginForm() {
         setError(data.error ?? "No se pudo iniciar sesión");
         return;
       }
-      router.replace(safeNext(searchParams.get("next")));
+      const next = safeNext(searchParams.get("next"));
+      router.replace(next === "/" ? "/?welcome=1" : next);
       router.refresh();
     } catch {
       setError("Error de conexión. Intenta de nuevo.");
