@@ -11,8 +11,10 @@ import {
   LeafIcon,
   RulerIcon,
   SearchIcon,
+  TagIcon,
   TiktokIcon,
   TruckIcon,
+  XIcon,
 } from "@/components/icons";
 import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
@@ -47,6 +49,7 @@ export function Storefront({
   const [cartOpen, setCartOpen] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [sellBannerOpen, setSellBannerOpen] = useState(true);
   const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
@@ -279,6 +282,31 @@ export function Storefront({
           </div>
         </div>
       </header>
+
+      {!currentUser && sellBannerOpen && (
+        <div className="relative bg-mustard">
+          <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 pr-11 text-center sm:px-6 sm:pr-14 lg:px-10 lg:pr-14">
+            <span className="flex items-center gap-2 text-sm font-semibold text-white">
+              <TagIcon className="h-4 w-4 flex-none" />
+              ¿Tienes ropa que ya no usas? Regístrate y véndela en K&N&apos;Store.
+            </span>
+            <Link
+              href="/registro"
+              className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-olive-ink hover:brightness-95"
+            >
+              Empieza a vender
+            </Link>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSellBannerOpen(false)}
+            aria-label="Cerrar aviso"
+            className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-white hover:bg-black/10"
+          >
+            <XIcon className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:gap-16 lg:px-10">
