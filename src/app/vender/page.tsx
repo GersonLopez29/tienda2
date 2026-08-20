@@ -31,12 +31,15 @@ export default function VenderPage() {
   )}`;
 
   return (
-    <main className="min-h-screen bg-bg px-4 py-14 sm:px-6">
+    <main
+      className="min-h-screen bg-bg bg-cover bg-center bg-fixed px-4 py-14 sm:px-6"
+      style={{ backgroundImage: "url(/kynstore-logo.jpeg)" }}
+    >
       <div className="mx-auto max-w-[640px]">
         <p className="text-xs text-ink-faint">K&N&apos;Store</p>
         <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">Cómo funciona vender</h1>
 
-        <div className="mt-6 rounded-2xl border border-line bg-surface p-6 whitespace-pre-line text-sm leading-relaxed text-ink-soft">
+        <div className="mt-6 rounded-2xl border border-line bg-surface/95 p-6 whitespace-pre-line text-sm leading-relaxed text-ink-soft shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)] backdrop-blur-sm">
           {CONTENT}
         </div>
 
