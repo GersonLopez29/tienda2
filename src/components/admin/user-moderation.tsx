@@ -36,7 +36,7 @@ export function UserModeration({ users, currentUserId }: { users: ModeratedUser[
   const logout = async () => {
     setLoggingOut(true);
     await fetch("/api/auth/logout", { method: "POST" });
-    router.replace("/login");
+    router.replace("/");
     router.refresh();
   };
 
