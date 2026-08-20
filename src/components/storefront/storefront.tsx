@@ -327,7 +327,7 @@ export function Storefront({
           <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 pr-11 text-center sm:px-6 sm:pr-14 lg:px-10 lg:pr-14">
             <span className="flex items-center gap-2 text-sm font-semibold text-white">
               <TagIcon className="h-4 w-4 flex-none" />
-              ¿Tienes ropa que ya no usas? Regístrate y véndela en K&N&apos;Store.
+              ¿Tienes ropa parada en tu closet? Dále segunda vida aquí.
             </span>
             <Link
               href="/registro"
