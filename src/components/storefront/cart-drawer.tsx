@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { BagIcon, MinusIcon, PlusIcon, TrashIcon, WhatsappIcon, XIcon } from "@/components/icons";
@@ -16,6 +17,7 @@ export function CartDrawer({
   open,
   groups,
   isLoggedIn,
+  emailVerified,
   onClose,
   onInc,
   onDec,
@@ -24,20 +26,33 @@ export function CartDrawer({
   open: boolean;
   groups: SellerGroup[];
   isLoggedIn: boolean;
+  emailVerified: boolean;
   onClose: () => void;
   onInc: (id: string) => void;
   onDec: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
   const router = useRouter();
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle");
   const grandTotal = groups.reduce((sum, g) => sum + g.subtotal, 0);
   const isEmpty = groups.length === 0;
+
+  const resendVerification = async () => {
+    setResendState("sending");
+    try {
+      const res = await fetch("/api/auth/resend-verification", { method: "POST" });
+      setResendState(res.ok ? "sent" : "idle");
+    } catch {
+      setResendState("idle");
+    }
+  };
 
   const checkoutWithSeller = (group: SellerGroup) => {
     if (!isLoggedIn) {
       router.push("/login?next=%2F");
       return;
     }
+    if (!emailVerified) return;
     const message = [
       `Hola ${group.seller.name}! Quiero comprar estas prendas de K&N'Store:`,
       ...group.lines.map(
@@ -154,14 +169,32 @@ export function CartDrawer({
                   <span className="text-sm font-semibold text-ink-soft">Subtotal</span>
                   <span className="fvnum text-base font-extrabold">S/ {group.subtotal}</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => checkoutWithSeller(group)}
-                  className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full bg-[#3f6c4b] py-3 text-sm font-bold text-white hover:brightness-95"
-                >
-                  <WhatsappIcon className="h-4 w-4" />
-                  {isLoggedIn ? `Finalizar compra con ${group.seller.name}` : "Inicia sesión para comprar"}
-                </button>
+                {isLoggedIn && !emailVerified ? (
+                  <div className="mt-2.5 rounded-xl border border-line-strong bg-surface-2 px-3.5 py-3 text-center">
+                    <p className="text-xs text-ink-soft">Verifica tu correo para poder comprar.</p>
+                    <button
+                      type="button"
+                      onClick={resendVerification}
+                      disabled={resendState !== "idle"}
+                      className="mt-1.5 text-xs font-bold text-olive-ink underline underline-offset-4 disabled:opacity-60"
+                    >
+                      {resendState === "sent"
+                        ? "Correo reenviado — revisa tu bandeja"
+                        : resendState === "sending"
+                          ? "Enviando…"
+                          : "Reenviar correo de verificación"}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => checkoutWithSeller(group)}
+                    className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full bg-[#3f6c4b] py-3 text-sm font-bold text-white hover:brightness-95"
+                  >
+                    <WhatsappIcon className="h-4 w-4" />
+                    {isLoggedIn ? `Finalizar compra con ${group.seller.name}` : "Inicia sesión para comprar"}
+                  </button>
+                )}
               </div>
             ))
           )}

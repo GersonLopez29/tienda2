@@ -38,7 +38,7 @@ export function Storefront({
   currentUser,
 }: {
   products: Product[];
-  currentUser: { name: string; isAdmin: boolean } | null;
+  currentUser: { name: string; isAdmin: boolean; emailVerified: boolean } | null;
 }) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -554,6 +554,7 @@ export function Storefront({
         open={cartOpen}
         groups={cartGroups}
         isLoggedIn={currentUser != null}
+        emailVerified={currentUser?.emailVerified ?? false}
         onClose={() => setCartOpen(false)}
         onInc={incInCart}
         onDec={decInCart}

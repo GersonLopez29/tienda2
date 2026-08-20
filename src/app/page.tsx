@@ -8,7 +8,9 @@ export default async function HomePage() {
   return (
     <Storefront
       products={products as unknown as Product[]}
-      currentUser={user ? { name: user.name, isAdmin: isAdmin(user) } : null}
+      currentUser={
+        user ? { name: user.name, isAdmin: isAdmin(user), emailVerified: user.emailVerified } : null
+      }
     />
   );
 }
