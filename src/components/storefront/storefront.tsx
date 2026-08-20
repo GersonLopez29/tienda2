@@ -39,7 +39,7 @@ export function Storefront({
   currentUser: { name: string; isAdmin: boolean } | null;
 }) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
-  const [sizes, setSizes] = useState<Set<string>>(new Set());
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [conditions, setConditions] = useState<Set<Product["condition"]>>(new Set());
   const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -66,7 +66,7 @@ export function Storefront({
         CATEGORY_LABEL[p.category] !== category
       )
         return false;
-      if (sizes.size && !sizes.has(p.size)) return false;
+      if (selectedSize && p.size !== selectedSize) return false;
       if (conditions.size && !conditions.has(p.condition)) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -74,7 +74,7 @@ export function Storefront({
       }
       return true;
     });
-  }, [products, category, sizes, conditions, search, favorites]);
+  }, [products, category, selectedSize, conditions, search, favorites]);
 
   const cartLines: CartLine[] = useMemo(
     () =>
@@ -123,13 +123,7 @@ export function Storefront({
       return next;
     });
 
-  const toggleSize = (size: string) =>
-    setSizes((s) => {
-      const next = new Set(s);
-      if (next.has(size)) next.delete(size);
-      else next.add(size);
-      return next;
-    });
+  const toggleSize = (size: string) => setSelectedSize((s) => (s === size ? null : size));
   const toggleCondition = (cond: Product["condition"]) =>
     setConditions((s) => {
       const next = new Set(s);
@@ -138,10 +132,10 @@ export function Storefront({
       return next;
     });
   const clearFilters = () => {
-    setSizes(new Set());
+    setSelectedSize(null);
     setConditions(new Set());
   };
-  const activeFilterCount = sizes.size + conditions.size;
+  const activeFilterCount = (selectedSize ? 1 : 0) + conditions.size;
 
   const previewProduct = products.find((p) => p.id === previewId) ?? null;
 
@@ -246,9 +240,10 @@ export function Storefront({
                     key={s}
                     type="button"
                     onClick={() => toggleSize(s)}
-                    aria-pressed={sizes.has(s)}
-                    className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
-                      sizes.has(s)
+                    disabled={selectedSize != null && selectedSize !== s}
+                    aria-pressed={selectedSize === s}
+                    className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40 ${
+                      selectedSize === s
                         ? "border-olive bg-olive text-white"
                         : "border-line-strong bg-surface text-ink-soft hover:border-olive-soft"
                     }`}
