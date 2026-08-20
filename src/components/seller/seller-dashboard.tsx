@@ -7,7 +7,13 @@ import { PencilIcon, PlusIcon, TagIcon, TrashIcon } from "@/components/icons";
 import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductForm } from "@/components/seller/product-form";
 
-export function SellerDashboard({ products }: { products: Product[] }) {
+export function SellerDashboard({
+  products,
+  emailVerified,
+}: {
+  products: Product[];
+  emailVerified: boolean;
+}) {
   const router = useRouter();
   const [panel, setPanel] = useState<"none" | "create" | Product>("none");
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -15,6 +21,17 @@ export function SellerDashboard({ products }: { products: Product[] }) {
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [togglingSoldId, setTogglingSoldId] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle");
+
+  const resendVerification = async () => {
+    setResendState("sending");
+    try {
+      const res = await fetch("/api/auth/resend-verification", { method: "POST" });
+      setResendState(res.ok ? "sent" : "idle");
+    } catch {
+      setResendState("idle");
+    }
+  };
 
   const toggleSold = async (product: Product) => {
     setTogglingSoldId(product.id);
@@ -91,12 +108,34 @@ export function SellerDashboard({ products }: { products: Product[] }) {
               <button
                 type="button"
                 onClick={() => setPanel("create")}
-                className="flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-surface hover:bg-olive"
+                disabled={!emailVerified}
+                className="flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-surface hover:bg-olive disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <PlusIcon className="h-4 w-4" />
                 Nueva prenda
               </button>
             </div>
+
+            {!emailVerified && (
+              <div className="mb-6 rounded-2xl border border-mustard bg-mustard-wash px-5 py-4 text-sm text-ink">
+                <p className="font-semibold">Verifica tu correo para poder publicar prendas.</p>
+                <p className="mt-1 text-ink-soft">
+                  Te enviamos un enlace de verificación al registrarte. Si no lo encuentras, pídelo de nuevo.
+                </p>
+                <button
+                  type="button"
+                  onClick={resendVerification}
+                  disabled={resendState !== "idle"}
+                  className="mt-2 text-sm font-bold text-olive-ink underline underline-offset-4 disabled:opacity-60"
+                >
+                  {resendState === "sent"
+                    ? "Correo reenviado — revisa tu bandeja"
+                    : resendState === "sending"
+                      ? "Enviando…"
+                      : "Reenviar correo de verificación"}
+                </button>
+              </div>
+            )}
 
             {products[0] && (
               <div className="mb-6 flex items-center gap-4 rounded-2xl border border-line bg-surface p-4">

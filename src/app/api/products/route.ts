@@ -7,6 +7,9 @@ import { productSchema } from "@/lib/validation";
 export async function POST(request: Request) {
   const { user, unauthorized } = await requireUser();
   if (unauthorized) return unauthorized;
+  if (!user.emailVerified) {
+    return NextResponse.json({ error: "Verifica tu correo antes de publicar prendas" }, { status: 403 });
+  }
 
   const body = await request.json().catch(() => null);
   const parsed = productSchema.safeParse(body);

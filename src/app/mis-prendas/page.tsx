@@ -9,5 +9,7 @@ export default async function MisPrendasPage() {
   if (!user) redirect("/login?next=/mis-prendas");
 
   const products = await getProductsBySeller(user.id);
-  return <SellerDashboard products={products as unknown as Product[]} />;
+  return (
+    <SellerDashboard products={products as unknown as Product[]} emailVerified={user.emailVerified} />
+  );
 }
