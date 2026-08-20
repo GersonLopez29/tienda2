@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { WhatsappIcon } from "@/components/icons";
 
@@ -28,14 +31,12 @@ puedes decidir si deseas recuperarla o donarla 💫
 ✨ Así de fácil es reLovear y darle nueva vida a tu closet 🌸`;
 
 const SELL_PHOTOS_NUMBER = "908566507";
+const photosWhatsappHref = `https://wa.me/51${SELL_PHOTOS_NUMBER}?text=${encodeURIComponent(
+  "Hola quiero comenzar a vender con ustedes",
+)}`;
 
 export default function VenderPage() {
-  const whatsappHref = `https://wa.me/${process.env.ADMIN_WHATSAPP}?text=${encodeURIComponent(
-    "Hola, quiero vender mi ropa en K&N'Store",
-  )}`;
-  const photosWhatsappHref = `https://wa.me/51${SELL_PHOTOS_NUMBER}?text=${encodeURIComponent(
-    "Hola quiero comenzar a vender con ustedes",
-  )}`;
+  const [accepted, setAccepted] = useState(false);
 
   return (
     <main
@@ -59,22 +60,39 @@ export default function VenderPage() {
           {CONTENT_AFTER_NUMBER}
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/registro"
-            className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-surface hover:bg-olive"
-          >
-            Crear cuenta y vender
-          </Link>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full border border-line-strong px-6 py-3 text-sm font-bold hover:border-ink"
-          >
-            <WhatsappIcon className="h-4 w-4" />
-            Escríbenos por WhatsApp
-          </a>
+        <div className="mt-6 rounded-2xl border border-line bg-surface/95 p-6 text-sm leading-relaxed text-ink-soft shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)] backdrop-blur-sm">
+          <p>
+            Si estás de acuerdo con lo indicado, por favor dale <strong>Aceptar</strong> y
+            comunícate con nosotros al número indicado en el punto número 2.
+          </p>
+
+          {!accepted ? (
+            <button
+              type="button"
+              onClick={() => setAccepted(true)}
+              className="mt-4 rounded-full bg-ink px-6 py-3 text-sm font-bold text-surface hover:bg-olive"
+            >
+              Aceptar
+            </button>
+          ) : (
+            <a
+              href={photosWhatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 flex w-fit items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-surface hover:bg-olive"
+            >
+              <WhatsappIcon className="h-4 w-4" />
+              Escríbenos por WhatsApp
+            </a>
+          )}
+
+          <p className="mt-5 border-t border-line pt-5">
+            Si deseas comprar alguna prenda del catálogo, por favor regístrate en la página{" "}
+            <Link href="/registro" className="font-bold text-olive-ink underline underline-offset-2">
+              Aquí
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </main>
