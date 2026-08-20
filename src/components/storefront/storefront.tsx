@@ -40,7 +40,7 @@ export function Storefront({
 }) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [conditions, setConditions] = useState<Set<Product["condition"]>>(new Set());
+  const [selectedCondition, setSelectedCondition] = useState<Product["condition"] | null>(null);
   const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -67,14 +67,14 @@ export function Storefront({
       )
         return false;
       if (selectedSize && p.size !== selectedSize) return false;
-      if (conditions.size && !conditions.has(p.condition)) return false;
+      if (selectedCondition && p.condition !== selectedCondition) return false;
       if (search) {
         const q = search.toLowerCase();
         if (!(p.title + " " + p.brand).toLowerCase().includes(q)) return false;
       }
       return true;
     });
-  }, [products, category, selectedSize, conditions, search, favorites]);
+  }, [products, category, selectedSize, selectedCondition, search, favorites]);
 
   const cartLines: CartLine[] = useMemo(
     () =>
@@ -125,17 +125,12 @@ export function Storefront({
 
   const toggleSize = (size: string) => setSelectedSize((s) => (s === size ? null : size));
   const toggleCondition = (cond: Product["condition"]) =>
-    setConditions((s) => {
-      const next = new Set(s);
-      if (next.has(cond)) next.delete(cond);
-      else next.add(cond);
-      return next;
-    });
+    setSelectedCondition((c) => (c === cond ? null : cond));
   const clearFilters = () => {
     setSelectedSize(null);
-    setConditions(new Set());
+    setSelectedCondition(null);
   };
-  const activeFilterCount = (selectedSize ? 1 : 0) + conditions.size;
+  const activeFilterCount = (selectedSize ? 1 : 0) + (selectedCondition ? 1 : 0);
 
   const previewProduct = products.find((p) => p.id === previewId) ?? null;
 
@@ -261,9 +256,10 @@ export function Storefront({
                     key={c}
                     type="button"
                     onClick={() => toggleCondition(c)}
-                    aria-pressed={conditions.has(c)}
-                    className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
-                      conditions.has(c)
+                    disabled={selectedCondition != null && selectedCondition !== c}
+                    aria-pressed={selectedCondition === c}
+                    className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40 ${
+                      selectedCondition === c
                         ? "border-olive bg-olive text-white"
                         : "border-line-strong bg-surface text-ink-soft hover:border-olive-soft"
                     }`}
