@@ -333,7 +333,7 @@ export function Storefront({
               href="/registro"
               className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-olive-ink hover:brightness-95"
             >
-              Regístrate y entérate cómo podemos ayudarte a venderla
+              Entérate cómo podemos ayudarte a venderla
             </Link>
           </div>
           <button
