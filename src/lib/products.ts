@@ -54,3 +54,7 @@ export function updateProduct(id: string, data: ProductInput) {
 export function deleteProduct(id: string) {
   return prisma.product.delete({ where: { id } });
 }
+
+export function setProductDiscount(id: string, price: number, originalPrice: number | null) {
+  return prisma.product.update({ where: { id }, data: { price, originalPrice } });
+}
