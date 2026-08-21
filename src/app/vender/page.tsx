@@ -28,7 +28,7 @@ y te vamos transfiriendo conforme se vendan las prendas.
 Si alguna prenda no se vende,
 puedes decidir si deseas recuperarla o donarla 💫
 
-✨ Así de fácil es reLovear y darle nueva vida a tu closet 🌸`;
+✨ Tu ropa merece brillar de nuevo: véndela con nosotras y gana por lo que ya no usas 🌸`;
 
 const SELL_PHOTOS_NUMBER = "908566507";
 const photosWhatsappHref = `https://wa.me/51${SELL_PHOTOS_NUMBER}?text=${encodeURIComponent(
