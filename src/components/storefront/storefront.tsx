@@ -29,6 +29,12 @@ const NEW_THRESHOLD_DAYS = 14;
 const isNewProduct = (p: Product) =>
   Date.now() - new Date(p.createdAt).getTime() < NEW_THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
 
+const LABEL_TO_CATEGORY: Partial<Record<CategoryFilter, Product["category"]>> = {
+  Hombre: "HOMBRE",
+  Mujer: "MUJER",
+  Unisex: "UNISEX",
+};
+
 const SIZES = ["S", "M", "L"];
 const CONDITIONS: Product["condition"][] = ["COMO_NUEVA", "POCO_USO", "VINTAGE"];
 const CONDITION_CHIP_LABEL: Record<Product["condition"], string> = {
@@ -41,12 +47,16 @@ export function Storefront({
   products,
   currentUser,
   visitCount,
+  initialAlertCategories,
 }: {
   products: Product[];
   currentUser: { name: string; isAdmin: boolean; emailVerified: boolean } | null;
   visitCount: number;
+  initialAlertCategories: string[];
 }) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
+  const [alertCategories, setAlertCategories] = useState(() => new Set(initialAlertCategories));
+  const [togglingAlert, setTogglingAlert] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedCondition, setSelectedCondition] = useState<Product["condition"] | null>(null);
   const [search, setSearch] = useState("");
@@ -166,6 +176,29 @@ export function Storefront({
   };
   const activeFilterCount = (selectedSize ? 1 : 0) + (selectedCondition ? 1 : 0);
 
+  const activeAlertCategory = LABEL_TO_CATEGORY[category];
+  const toggleStockAlert = async () => {
+    if (!activeAlertCategory || togglingAlert) return;
+    setTogglingAlert(true);
+    try {
+      const res = await fetch("/api/stock-alerts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category: activeAlertCategory }),
+      });
+      if (!res.ok) return;
+      const { subscribed } = await res.json();
+      setAlertCategories((prev) => {
+        const next = new Set(prev);
+        if (subscribed) next.add(activeAlertCategory);
+        else next.delete(activeAlertCategory);
+        return next;
+      });
+    } finally {
+      setTogglingAlert(false);
+    }
+  };
+
   const previewProduct = products.find((p) => p.id === previewId) ?? null;
 
   return (
@@ -270,6 +303,18 @@ export function Storefront({
               </button>
             ))}
           </nav>
+          {currentUser && activeAlertCategory && (
+            <div className="border-t border-line py-2.5">
+              <button
+                type="button"
+                onClick={toggleStockAlert}
+                disabled={togglingAlert}
+                className="flex items-center gap-1.5 rounded-full border border-line-strong px-3.5 py-1.5 text-xs font-semibold text-ink-soft hover:border-ink hover:text-ink disabled:opacity-60"
+              >
+                {alertCategories.has(activeAlertCategory) ? "🔔 Te avisamos" : "🔕 Avísame de lo nuevo en " + category}
+              </button>
+            </div>
+          )}
         </div>
         <div
           className="overflow-hidden border-b border-line bg-surface-2 transition-[max-height] duration-300"
@@ -563,6 +608,11 @@ export function Storefront({
                   Guía de tallas
                 </Link>
               </li>
+              <li>
+                <Link href="/preguntas-frecuentes" className="text-[#cfc6b4] hover:text-[#f2ecdf] hover:underline">
+                  Preguntas frecuentes
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -585,6 +635,9 @@ export function Storefront({
             <>
               <Link href="/mis-prendas" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
                 Mis prendas
+              </Link>
+              <Link href="/mis-compras" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">
+                Mis compras
               </Link>
               {currentUser.isAdmin && (
                 <Link href="/admin" className="ml-2 underline underline-offset-4 hover:text-[#cfc6b4]">

@@ -35,6 +35,15 @@ export function sendPasswordResetEmail(to: string, name: string, token: string) 
   );
 }
 
+export function sendNewStockAlertEmail(to: string, name: string, productTitle: string, productId: string) {
+  const url = `${appUrl}/producto/${productId}`;
+  return send(
+    to,
+    `Nueva prenda en tu categoría — ${productTitle}`,
+    `<p>Hola ${name},</p><p>Acaba de publicarse una prenda nueva en una categoría que sigues:</p><p><strong>${productTitle}</strong></p><p><a href="${url}">${url}</a></p>`
+  );
+}
+
 export function sendDuplicateRegistrationNotice(to: string, name: string) {
   return send(
     to,

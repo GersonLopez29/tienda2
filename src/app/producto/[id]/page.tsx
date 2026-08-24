@@ -3,8 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
+import { getCurrentUser } from "@/lib/session";
+import { getSellerRatingSummary, getReviewsForSeller, getMyReviewForSeller } from "@/lib/reviews";
 import { CONDITION_LABEL, type Product } from "@/lib/types";
 import { WhatsappIcon } from "@/components/icons";
+import { ShareButton } from "@/components/storefront/share-button";
+import { StarRating } from "@/components/storefront/star-rating";
+import { ReviewForm } from "@/components/storefront/review-form";
 
 export async function generateMetadata({
   params,
@@ -27,6 +32,13 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
   const product = await getProductById(id);
   if (!product) notFound();
 
+  const [user, ratingSummary, reviews] = await Promise.all([
+    getCurrentUser(),
+    getSellerRatingSummary(product.sellerId),
+    getReviewsForSeller(product.sellerId),
+  ]);
+  const myReview = user ? await getMyReviewForSeller(product.sellerId, user.id) : null;
+
   const whatsappHref = `https://wa.me/${product.seller.whatsapp}?text=${encodeURIComponent(
     `Hola ${product.seller.name}! Me interesa esta prenda: ${product.title} (S/ ${product.price})`
   )}`;
@@ -45,7 +57,18 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
           <h1 className="text-2xl font-extrabold leading-tight text-balance sm:text-3xl">
             {product.title}
           </h1>
-          <p className="text-xs text-ink-faint">Vendido por {product.seller.name}</p>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-ink-faint">
+            <span>Vendido por {product.seller.name}</span>
+            {ratingSummary.count > 0 && (
+              <span className="flex items-center gap-1">
+                <StarRating value={ratingSummary.avg} />
+                <span className="fvnum">
+                  {ratingSummary.avg.toFixed(1)} ({ratingSummary.count})
+                </span>
+              </span>
+            )}
+          </div>
+          <ShareButton title={product.title} />
           <div className="flex flex-wrap gap-1.5">
             <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
               Talla {product.size}
@@ -98,6 +121,33 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
             <h2 className="mb-2 text-xs tracking-wide text-ink-faint uppercase">Cómo combinarla</h2>
             <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">{product.pairing}</p>
           </div>
+
+          {reviews.length > 0 && (
+            <div>
+              <h2 className="mb-2 text-xs tracking-wide text-ink-faint uppercase">
+                Reseñas del vendedor
+              </h2>
+              <div className="flex flex-col gap-3">
+                {reviews.map((r) => (
+                  <div key={r.id} className="rounded-xl border border-line bg-surface-2 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold">{r.author.name}</span>
+                      <StarRating value={r.rating} size="0.8em" />
+                    </div>
+                    {r.comment && <p className="mt-1 text-xs text-ink-soft">{r.comment}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {user && user.id !== product.sellerId && (
+            <ReviewForm
+              sellerId={product.sellerId}
+              initialRating={myReview?.rating ?? 0}
+              initialComment={myReview?.comment ?? ""}
+            />
+          )}
 
           {product.sold ? (
             <span className="mt-1 flex items-center justify-center rounded-full bg-surface-2 px-4 py-3.5 text-sm font-bold text-ink-faint">

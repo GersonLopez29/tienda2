@@ -20,7 +20,7 @@ enum Condition {
 }
 
 model Product {
-  id            String     @id @default(cuid())
+  id            String      @id @default(cuid())
   title         String
   brand         String
   category      Category
@@ -29,34 +29,85 @@ model Product {
   price         Int
   originalPrice Int?
   material      String
-  story         String     @db.Text
-  pairing       String     @db.Text
+  story         String      @db.Text
+  pairing       String      @db.Text
   measurements  Json
-  images        String[]   @default([])
-  sold          Boolean    @default(false)
+  images        String[]    @default([])
+  sold          Boolean     @default(false)
   sellerId      String
-  seller        User       @relation(fields: [sellerId], references: [id])
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  seller        User        @relation(fields: [sellerId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
 }
 
 model User {
-  id                         String    @id @default(cuid())
+  id                         String       @id @default(cuid())
   name                       String
-  email                      String    @unique
+  email                      String       @unique
   passwordHash               String
   whatsapp                   String
-  role                       String    @default("user")
-  isBlocked                  Boolean   @default(false)
-  failedLoginAttempts        Int       @default(0)
+  role                       String       @default("user")
+  isBlocked                  Boolean      @default(false)
+  failedLoginAttempts        Int          @default(0)
   lockedUntil                DateTime?
-  emailVerified              Boolean   @default(false)
-  verificationToken          String?   @unique
+  emailVerified              Boolean      @default(false)
+  verificationToken          String?      @unique
   verificationTokenExpiresAt DateTime?
-  resetToken                 String?   @unique
+  resetToken                 String?      @unique
   resetTokenExpiresAt        DateTime?
-  createdAt                  DateTime  @default(now())
+  createdAt                  DateTime     @default(now())
   products                   Product[]
+  reviewsReceived            Review[]     @relation("SellerReviews")
+  reviewsWritten             Review[]     @relation("AuthorReviews")
+  ordersAsBuyer              Order[]      @relation("BuyerOrders")
+  ordersAsSeller             Order[]      @relation("SellerOrders")
+  stockAlerts                StockAlert[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  sellerId  String
+  seller    User     @relation("SellerReviews", fields: [sellerId], references: [id])
+  authorId  String
+  author    User     @relation("AuthorReviews", fields: [authorId], references: [id])
+  rating    Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@unique([sellerId, authorId])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  buyerId   String
+  buyer     User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  sellerId  String
+  seller    User        @relation("SellerOrders", fields: [sellerId], references: [id])
+  total     Int
+  createdAt DateTime    @default(now())
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  title     String
+  price     Int
+  qty       Int
+}
+
+model StockAlert {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  category  Category
+  createdAt DateTime @default(now())
+
+  @@unique([userId, category])
 }
 
 model PageVisit {

@@ -6,7 +6,14 @@ const APP_URL = process.env.APP_URL ?? "http://localhost:3000";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await getAllProducts();
 
-  const staticRoutes: MetadataRoute.Sitemap = ["/", "/vender", "/registro", "/login", "/guia-tallas"].map((path) => ({
+  const staticRoutes: MetadataRoute.Sitemap = [
+    "/",
+    "/vender",
+    "/registro",
+    "/login",
+    "/guia-tallas",
+    "/preguntas-frecuentes",
+  ].map((path) => ({
     url: `${APP_URL}${path}`,
     changeFrequency: path === "/" ? "daily" : "monthly",
     priority: path === "/" ? 1 : 0.5,

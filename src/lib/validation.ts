@@ -37,3 +37,27 @@ export const resetPasswordSchema = z.object({
   token: z.string().min(1),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
+
+export const reviewSchema = z.object({
+  sellerId: z.string().min(1),
+  rating: z.coerce.number().int().min(1).max(5),
+  comment: z.string().trim().max(500),
+});
+
+export const orderSchema = z.object({
+  sellerId: z.string().min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        title: z.string().min(1),
+        price: z.coerce.number().int().positive(),
+        qty: z.coerce.number().int().positive(),
+      })
+    )
+    .min(1),
+});
+
+export const stockAlertSchema = z.object({
+  category: z.enum(["HOMBRE", "MUJER", "UNISEX"]),
+});

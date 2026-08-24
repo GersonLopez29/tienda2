@@ -70,6 +70,20 @@ export function CartDrawer({
       "noopener"
     );
     setCheckedOut(true);
+
+    fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sellerId: group.seller.id,
+        items: group.lines.map((l) => ({
+          productId: l.product.id,
+          title: l.product.title,
+          price: l.product.price,
+          qty: l.qty,
+        })),
+      }),
+    }).catch(() => {});
   };
 
   const logout = async () => {
