@@ -59,6 +59,11 @@ model User {
   products                   Product[]
 }
 
+model PageVisit {
+  id    String @id @default("home")
+  count Int    @default(0)
+}
+
 model RegistrationAttempt {
   id        String   @id @default(cuid())
   ip        String

@@ -37,9 +37,11 @@ const CONDITION_CHIP_LABEL: Record<Product["condition"], string> = {
 export function Storefront({
   products,
   currentUser,
+  visitCount,
 }: {
   products: Product[];
   currentUser: { name: string; isAdmin: boolean; emailVerified: boolean } | null;
+  visitCount: number;
 }) {
   const [category, setCategory] = useState<CategoryFilter>("Todos");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -585,6 +587,7 @@ export function Storefront({
               Iniciar sesión
             </Link>
           )}
+          <p className="fvnum mt-1 text-[#8a8272]">{visitCount.toLocaleString("es-PE")} visitas</p>
         </div>
       </footer>
 
