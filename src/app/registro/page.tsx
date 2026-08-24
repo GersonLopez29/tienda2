@@ -38,7 +38,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg px-4 py-10">
+    <main className="flex min-h-dvh items-center justify-center bg-bg px-4 py-10">
       <form
         onSubmit={onSubmit}
         className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]"

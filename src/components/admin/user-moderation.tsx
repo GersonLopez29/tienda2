@@ -69,7 +69,7 @@ export function UserModeration({ users, currentUserId }: { users: ModeratedUser[
   };
 
   return (
-    <main className="min-h-screen bg-bg">
+    <main className="min-h-dvh bg-bg">
       <header className="border-b border-line bg-surface">
         <div className="mx-auto flex max-w-[1100px] items-center justify-between px-4 py-5 sm:px-6">
           <div>

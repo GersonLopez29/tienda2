@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Error({ retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg px-4 text-center">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-bg px-4 text-center">
       <p className="text-sm font-semibold tracking-wide text-terracotta-ink uppercase">Algo salió mal</p>
       <h1 className="text-3xl font-extrabold text-balance sm:text-4xl">
         Ocurrió un error inesperado

@@ -40,7 +40,7 @@ export default function VenderPage() {
 
   return (
     <main
-      className="min-h-screen bg-bg bg-cover bg-center bg-fixed px-4 py-14 sm:px-6"
+      className="min-h-dvh bg-bg bg-cover bg-center bg-fixed px-4 py-14 sm:px-6"
       style={{ backgroundImage: "url(/kynstore-logo.jpeg)" }}
     >
       <div className="mx-auto max-w-[640px]">

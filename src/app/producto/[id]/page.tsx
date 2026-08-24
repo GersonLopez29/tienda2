@@ -32,7 +32,7 @@ export default async function ProductPage({ params }: PageProps<"/producto/[id]"
   )}`;
 
   return (
-    <main className="min-h-screen bg-bg">
+    <main className="min-h-dvh bg-bg">
       <div className="mx-auto max-w-[1000px] px-4 py-6 sm:px-6">
         <Link href="/" className="text-sm font-semibold text-olive-ink hover:underline">
           ← Volver a la tienda

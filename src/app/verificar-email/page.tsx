@@ -11,7 +11,7 @@ export default async function VerifyEmailPage({
   const result = await verify(token);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg px-4">
+    <main className="flex min-h-dvh items-center justify-center bg-bg px-4">
       <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 text-center shadow-[0_20px_50px_-16px_rgba(46,42,34,0.3)]">
         <h1 className="text-xl font-extrabold text-olive-ink">K&N&apos;Store</h1>
         <p className="mt-3 text-sm text-ink-soft">{result.message}</p>
