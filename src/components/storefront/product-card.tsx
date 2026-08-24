@@ -9,6 +9,10 @@ const CONDITION_STYLE: Record<Product["condition"], string> = {
   VINTAGE: "bg-ink text-surface",
 };
 
+const NEW_THRESHOLD_DAYS = 14;
+const isNewProduct = (p: Product) =>
+  Date.now() - new Date(p.createdAt).getTime() < NEW_THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
+
 export function ProductCard({
   product,
   onAdd,
@@ -46,11 +50,16 @@ export function ProductCard({
             VENDIDO
           </span>
         ) : (
-          isOffer && (
+          (isOffer && (
             <span className="absolute left-0 top-0 rounded-br-[10px] bg-terracotta px-2.5 py-1 text-[0.66rem] font-bold text-white">
               OFERTA
             </span>
-          )
+          )) ||
+          (isNewProduct(product) && (
+            <span className="absolute left-0 top-0 rounded-br-[10px] bg-olive px-2.5 py-1 text-[0.66rem] font-bold text-white">
+              NUEVO
+            </span>
+          ))
         )}
         <button
           type="button"

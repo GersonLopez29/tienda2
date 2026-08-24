@@ -23,8 +23,11 @@ import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine, type SellerGroup } from "@/components/storefront/cart-drawer";
 import { useFavorites } from "@/lib/use-favorites";
 
-const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Ofertas", "Favoritos"] as const;
+const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Nuevo", "Ofertas", "Favoritos"] as const;
 type CategoryFilter = (typeof CATEGORIES)[number];
+const NEW_THRESHOLD_DAYS = 14;
+const isNewProduct = (p: Product) =>
+  Date.now() - new Date(p.createdAt).getTime() < NEW_THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
 
 const SIZES = ["S", "M", "L"];
 const CONDITIONS: Product["condition"][] = ["COMO_NUEVA", "POCO_USO", "VINTAGE"];
@@ -88,10 +91,12 @@ export function Storefront({
     return products.filter((p) => {
       if (category === "Ofertas" && p.originalPrice == null) return false;
       if (category === "Favoritos" && !favorites.has(p.id)) return false;
+      if (category === "Nuevo" && !isNewProduct(p)) return false;
       if (
         category !== "Todos" &&
         category !== "Ofertas" &&
         category !== "Favoritos" &&
+        category !== "Nuevo" &&
         CATEGORY_LABEL[p.category] !== category
       )
         return false;
@@ -374,7 +379,7 @@ export function Storefront({
               </a>
               <a
                 href="#catalogo"
-                onClick={() => setCategory("Ofertas")}
+                onClick={() => setCategory("Nuevo")}
                 className="rounded-full border border-olive px-6 py-3.5 text-sm font-bold text-olive-ink hover:bg-olive-wash"
               >
                 Novedades
@@ -552,6 +557,11 @@ export function Storefront({
                 >
                   Unisex
                 </button>
+              </li>
+              <li>
+                <Link href="/guia-tallas" className="text-[#cfc6b4] hover:text-[#f2ecdf] hover:underline">
+                  Guía de tallas
+                </Link>
               </li>
             </ul>
           </div>
