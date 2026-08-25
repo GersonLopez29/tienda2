@@ -22,6 +22,7 @@ import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine, type SellerGroup } from "@/components/storefront/cart-drawer";
 import { useFavorites } from "@/lib/use-favorites";
+import { useCart } from "@/lib/use-cart";
 
 const CATEGORIES = ["Todos", "Hombre", "Mujer", "Unisex", "Nuevo", "Ofertas", "Favoritos"] as const;
 type CategoryFilter = (typeof CATEGORIES)[number];
@@ -61,7 +62,7 @@ export function Storefront({
   const [selectedCondition, setSelectedCondition] = useState<Product["condition"] | null>(null);
   const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const { cart, updateCart: setCart } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
