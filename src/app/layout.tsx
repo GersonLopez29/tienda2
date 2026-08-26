@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SuggestionButton } from "@/components/suggestion-button";
 import "./globals.css";
 
 const APP_URL = process.env.APP_URL ?? "http://localhost:3000";
@@ -30,7 +31,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <SuggestionButton />
+      </body>
     </html>
   );
 }

@@ -196,6 +196,14 @@ export function TiktokIcon({ className }: IconProps) {
   );
 }
 
+export function MessageIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M4 5h16v11H8l-4 4V5z" />
+    </svg>
+  );
+}
+
 export function UploadIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">

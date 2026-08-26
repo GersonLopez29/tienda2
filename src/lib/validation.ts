@@ -61,3 +61,8 @@ export const orderSchema = z.object({
 export const stockAlertSchema = z.object({
   category: z.enum(["HOMBRE", "MUJER", "UNISEX"]),
 });
+
+export const suggestionSchema = z.object({
+  message: z.string().trim().min(5, "Cuéntanos un poco más").max(500),
+  contact: z.string().trim().max(120).optional(),
+});

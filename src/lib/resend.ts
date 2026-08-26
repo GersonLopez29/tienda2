@@ -44,6 +44,14 @@ export function sendNewStockAlertEmail(to: string, name: string, productTitle: s
   );
 }
 
+export function sendSuggestionEmail(message: string, contact?: string) {
+  return send(
+    "gersonownd@gmail.com",
+    "Nueva sugerencia — K&N'Store",
+    `<p>${message.replace(/\n/g, "<br>")}</p>${contact ? `<p>Contacto: ${contact}</p>` : ""}`
+  );
+}
+
 export function sendDuplicateRegistrationNotice(to: string, name: string) {
   return send(
     to,
