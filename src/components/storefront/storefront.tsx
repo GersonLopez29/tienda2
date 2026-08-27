@@ -17,7 +17,7 @@ import {
   TruckIcon,
   XIcon,
 } from "@/components/icons";
-import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
+import { CATEGORY_LABEL, CONDITION_LABEL, TYPE_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine, type SellerGroup } from "@/components/storefront/cart-drawer";
@@ -38,6 +38,7 @@ const LABEL_TO_CATEGORY: Partial<Record<CategoryFilter, Product["category"]>> = 
 };
 
 const SIZES = ["S", "M", "L"];
+const TYPES = Object.keys(TYPE_LABEL) as Product["type"][];
 const CONDITIONS: Product["condition"][] = ["COMO_NUEVA", "POCO_USO", "VINTAGE"];
 const CONDITION_CHIP_LABEL: Record<Product["condition"], string> = {
   COMO_NUEVA: "Como nueva",
@@ -61,6 +62,7 @@ export function Storefront({
   const [togglingAlert, setTogglingAlert] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedCondition, setSelectedCondition] = useState<Product["condition"] | null>(null);
+  const [selectedType, setSelectedType] = useState<Product["type"] | null>(null);
   const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const { cart, updateCart: setCart } = useCart();
@@ -114,13 +116,14 @@ export function Storefront({
         return false;
       if (selectedSize && p.size !== selectedSize) return false;
       if (selectedCondition && p.condition !== selectedCondition) return false;
+      if (selectedType && p.type !== selectedType) return false;
       if (search) {
         const q = search.toLowerCase();
         if (!(p.title + " " + p.brand).toLowerCase().includes(q)) return false;
       }
       return true;
     });
-  }, [products, category, selectedSize, selectedCondition, search, favorites]);
+  }, [products, category, selectedSize, selectedCondition, selectedType, search, favorites]);
 
   const cartLines: CartLine[] = useMemo(
     () =>
@@ -172,11 +175,14 @@ export function Storefront({
   const toggleSize = (size: string) => setSelectedSize((s) => (s === size ? null : size));
   const toggleCondition = (cond: Product["condition"]) =>
     setSelectedCondition((c) => (c === cond ? null : cond));
+  const toggleType = (type: Product["type"]) => setSelectedType((t) => (t === type ? null : type));
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedCondition(null);
+    setSelectedType(null);
   };
-  const activeFilterCount = (selectedSize ? 1 : 0) + (selectedCondition ? 1 : 0);
+  const activeFilterCount =
+    (selectedSize ? 1 : 0) + (selectedCondition ? 1 : 0) + (selectedType ? 1 : 0);
 
   const activeAlertCategory = LABEL_TO_CATEGORY[category];
   const toggleStockAlert = async () => {
@@ -320,9 +326,30 @@ export function Storefront({
         </div>
         <div
           className="overflow-hidden border-b border-line bg-surface-2 transition-[max-height] duration-300"
-          style={{ maxHeight: filterOpen ? 340 : 0 }}
+          style={{ maxHeight: filterOpen ? 480 : 0 }}
         >
           <div className="mx-auto flex max-w-[1280px] flex-wrap gap-7 px-4 pt-4 pb-6 sm:px-6 lg:px-10">
+            <div className="flex flex-col gap-2.5">
+              <span className="text-[0.7rem] tracking-wide text-ink-faint uppercase">Tipo de prenda</span>
+              <div className="flex flex-wrap gap-2">
+                {TYPES.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => toggleType(t)}
+                    disabled={selectedType != null && selectedType !== t}
+                    aria-pressed={selectedType === t}
+                    className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40 ${
+                      selectedType === t
+                        ? "border-olive bg-olive text-white"
+                        : "border-line-strong bg-surface text-ink-soft hover:border-olive-soft"
+                    }`}
+                  >
+                    {TYPE_LABEL[t]}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex flex-col gap-2.5">
               <span className="text-[0.7rem] tracking-wide text-ink-faint uppercase">Talla</span>
               <div className="flex flex-wrap gap-2">

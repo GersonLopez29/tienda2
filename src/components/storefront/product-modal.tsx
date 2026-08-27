@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BagIcon, XIcon } from "@/components/icons";
-import { CONDITION_LABEL, type Product } from "@/lib/types";
+import { CONDITION_LABEL, TYPE_LABEL, type Product } from "@/lib/types";
 
 export function ProductModal({
   product,
@@ -103,6 +103,9 @@ export function ProductModal({
               {product.title}
             </h3>
             <div className="flex flex-wrap gap-1.5">
+              <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
+                {TYPE_LABEL[product.type]}
+              </span>
               <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
                 Talla {product.size}
               </span>

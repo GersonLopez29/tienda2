@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BagIcon, EyeIcon, HeartIcon } from "@/components/icons";
-import { CONDITION_LABEL, type Product } from "@/lib/types";
+import { CONDITION_LABEL, TYPE_LABEL, type Product } from "@/lib/types";
 
 const CONDITION_STYLE: Record<Product["condition"], string> = {
   COMO_NUEVA: "bg-olive-wash text-olive-ink",
@@ -79,6 +79,9 @@ export function ProductCard({
           <h3 className="text-[0.98rem] font-bold leading-tight text-balance">{product.title}</h3>
         </Link>
         <div className="mt-0.5 flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
+            {TYPE_LABEL[product.type]}
+          </span>
           <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs text-ink-soft">
             Talla {product.size}
           </span>

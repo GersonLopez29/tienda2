@@ -19,11 +19,22 @@ enum Condition {
   VINTAGE
 }
 
+enum GarmentType {
+  CASACA
+  HOODIE
+  POLERA
+  PANTALON
+  VESTIDO
+  ZAPATILLA
+  OTRO
+}
+
 model Product {
   id            String      @id @default(cuid())
   title         String
   brand         String
   category      Category
+  type          GarmentType @default(OTRO)
   size          String
   condition     Condition
   price         Int

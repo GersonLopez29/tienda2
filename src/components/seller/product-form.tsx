@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { PlusIcon, TrashIcon, UploadIcon, XIcon } from "@/components/icons";
-import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
-import type { Category, Condition } from "@/generated/prisma/client";
+import { CATEGORY_LABEL, CONDITION_LABEL, TYPE_LABEL, type Product } from "@/lib/types";
+import type { Category, Condition, GarmentType } from "@/generated/prisma/client";
 
 export type ProductFormPayload = {
   title: string;
   brand: string;
   category: Category;
+  type: GarmentType;
   size: string;
   condition: Condition;
   price: number;
@@ -23,6 +24,7 @@ export type ProductFormPayload = {
 
 const CATEGORIES = Object.keys(CATEGORY_LABEL) as Category[];
 const CONDITIONS = Object.keys(CONDITION_LABEL) as Condition[];
+const TYPES = Object.keys(TYPE_LABEL) as GarmentType[];
 
 function measurementsToRows(m: Record<string, number>) {
   const entries = Object.entries(m);
@@ -41,6 +43,7 @@ export function ProductForm({
   const [title, setTitle] = useState(product?.title ?? "");
   const [brand, setBrand] = useState(product?.brand ?? "");
   const [category, setCategory] = useState<Category>(product?.category ?? "UNISEX");
+  const [type, setType] = useState<GarmentType>(product?.type ?? "OTRO");
   const [size, setSize] = useState(product?.size ?? "");
   const [condition, setCondition] = useState<Condition>(product?.condition ?? "COMO_NUEVA");
   const [price, setPrice] = useState(product ? String(product.price) : "");
@@ -104,6 +107,7 @@ export function ProductForm({
       title: title.trim(),
       brand: brand.trim(),
       category,
+      type,
       size: size.trim(),
       condition,
       price: Number(price),
@@ -167,6 +171,20 @@ export function ProductForm({
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {CATEGORY_LABEL[c]}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Tipo de prenda" htmlFor="type">
+          <select
+            id="type"
+            value={type}
+            onChange={(e) => setType(e.target.value as GarmentType)}
+            className={`${inputCls} w-full`}
+          >
+            {TYPES.map((t) => (
+              <option key={t} value={t}>
+                {TYPE_LABEL[t]}
               </option>
             ))}
           </select>

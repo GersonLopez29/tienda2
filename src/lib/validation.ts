@@ -4,6 +4,7 @@ export const productSchema = z.object({
   title: z.string().trim().min(1, "El título es obligatorio").max(120),
   brand: z.string().trim().min(1, "La marca es obligatoria").max(60),
   category: z.enum(["HOMBRE", "MUJER", "UNISEX"]),
+  type: z.enum(["CASACA", "HOODIE", "POLERA", "PANTALON", "VESTIDO", "ZAPATILLA", "OTRO"]),
   size: z.string().trim().min(1, "La talla es obligatoria").max(20),
   condition: z.enum(["COMO_NUEVA", "POCO_USO", "VINTAGE"]),
   price: z.coerce.number().int().positive("El precio debe ser mayor a 0"),

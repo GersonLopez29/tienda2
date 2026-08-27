@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
-import type { Category, Condition } from "@/generated/prisma/client";
+import type { Category, Condition, GarmentType } from "@/generated/prisma/client";
 
 export type ProductMeasurements = Record<string, number>;
 
@@ -8,6 +8,7 @@ export type ProductInput = {
   title: string;
   brand: string;
   category: Category;
+  type: GarmentType;
   size: string;
   condition: Condition;
   price: number;
