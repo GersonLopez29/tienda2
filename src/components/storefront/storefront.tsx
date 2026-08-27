@@ -21,6 +21,7 @@ import { CATEGORY_LABEL, CONDITION_LABEL, type Product } from "@/lib/types";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductModal } from "@/components/storefront/product-modal";
 import { CartDrawer, type CartLine, type SellerGroup } from "@/components/storefront/cart-drawer";
+import { LatestProductsBanner } from "@/components/storefront/latest-products-banner";
 import { useFavorites } from "@/lib/use-favorites";
 import { useCart } from "@/lib/use-cart";
 
@@ -399,6 +400,8 @@ export function Storefront({
           </button>
         </div>
       )}
+
+      <LatestProductsBanner products={products} onSelect={setPreviewId} />
 
       <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:gap-16 lg:px-10">
