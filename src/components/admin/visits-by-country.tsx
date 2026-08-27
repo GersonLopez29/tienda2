@@ -19,28 +19,42 @@ export function VisitsByCountry({ visits }: { visits: { country: string; count: 
       {visits.length === 0 ? (
         <p className="text-sm text-ink-faint">Todavía no hay visitas registradas.</p>
       ) : (
-        <div className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-5">
-          {visits.map((v) => {
-            const pct = Math.max(4, Math.round((v.count / max) * 100));
-            return (
-              <div
-                key={v.country}
-                className="group flex items-center gap-3"
-                title={`${countryLabel(v.country)}: ${v.count} visita${v.count === 1 ? "" : "s"}`}
-              >
-                <span className="w-28 flex-none truncate text-xs font-bold text-ink-soft sm:w-40">
-                  {countryLabel(v.country)}
-                </span>
-                <div className="h-6 min-w-0 flex-1 rounded-sm bg-surface-2">
-                  <div
-                    className="h-6 rounded-r-[4px] bg-olive transition-[filter] group-hover:brightness-95"
-                    style={{ width: `${pct}%` }}
-                  />
+        <div className="rounded-2xl border border-line bg-surface p-5">
+          <div className="flex flex-col gap-3">
+            {visits.map((v) => {
+              const pct = Math.max(4, Math.round((v.count / max) * 100));
+              return (
+                <div
+                  key={v.country}
+                  className="group flex items-center gap-3"
+                  title={`${countryLabel(v.country)}: ${v.count} visita${v.count === 1 ? "" : "s"}`}
+                >
+                  <span className="w-28 flex-none truncate text-xs font-bold text-ink-soft sm:w-40">
+                    {countryLabel(v.country)}
+                  </span>
+                  <div className="relative h-6 min-w-0 flex-1 overflow-hidden rounded-sm bg-surface-2">
+                    <div className="absolute inset-y-0 left-1/2 w-px bg-line-strong" />
+                    <div className="absolute inset-y-0 right-0 w-px bg-line-strong" />
+                    <div
+                      className="relative z-10 h-6 rounded-r-[4px] bg-olive transition-[filter] group-hover:brightness-95"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="fvnum w-8 flex-none text-right text-xs font-bold text-ink-faint">{v.count}</span>
                 </div>
-                <span className="fvnum w-8 flex-none text-right text-xs font-bold text-ink-faint">{v.count}</span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          <div className="mt-2 flex items-center gap-3">
+            <span className="w-28 flex-none sm:w-40" />
+            <div className="flex flex-1 justify-between text-[10px] font-semibold text-ink-faint">
+              <span>0</span>
+              <span>{Math.round(max / 2)}</span>
+              <span>{max}</span>
+            </div>
+            <span className="w-8 flex-none" />
+          </div>
         </div>
       )}
     </div>
