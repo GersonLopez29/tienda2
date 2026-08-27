@@ -116,8 +116,13 @@ model PageVisit {
 }
 
 model CountryVisit {
-  country String @id
-  count   Int    @default(0)
+  id      String   @id @default(cuid())
+  country String
+  date    DateTime @db.Date
+  count   Int      @default(0)
+
+  @@unique([country, date])
+  @@index([date])
 }
 
 model RegistrationAttempt {
