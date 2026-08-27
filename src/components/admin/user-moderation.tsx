@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AdminHeader } from "@/components/admin/admin-header";
 
 type ModeratedUser = {
   id: string;
@@ -17,7 +18,6 @@ type ModeratedUser = {
 export function UserModeration({ users, currentUserId }: { users: ModeratedUser[]; currentUserId: string }) {
   const router = useRouter();
   const [togglingId, setTogglingId] = useState<string | null>(null);
-  const [loggingOut, setLoggingOut] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ModeratedUser | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -61,39 +61,9 @@ export function UserModeration({ users, currentUserId }: { users: ModeratedUser[
     }
   };
 
-  const logout = async () => {
-    setLoggingOut(true);
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.replace("/");
-    router.refresh();
-  };
-
   return (
     <main className="bg-bg">
-      <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-4 py-5 sm:px-6">
-          <div>
-            <p className="text-xs text-ink-faint">K&N'Store</p>
-            <h1 className="text-lg font-extrabold">Moderación de usuarios</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <a href="/mis-prendas" className="text-sm font-semibold text-olive-ink hover:underline">
-              Mis prendas
-            </a>
-            <a href="/" className="text-sm font-semibold text-olive-ink hover:underline">
-              Ver tienda
-            </a>
-            <button
-              type="button"
-              onClick={logout}
-              disabled={loggingOut}
-              className="rounded-full border border-line-strong px-4 py-2 text-sm font-semibold hover:border-ink disabled:opacity-60"
-            >
-              {loggingOut ? "Saliendo…" : "Cerrar sesión"}
-            </button>
-          </div>
-        </div>
-      </header>
+      <AdminHeader title="Moderación de usuarios" />
 
       <div className="mx-auto max-w-[1100px] px-4 py-8 sm:px-6">
         <h2 className="mb-6 text-xl font-extrabold">Usuarios ({users.length})</h2>
