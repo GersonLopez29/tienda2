@@ -26,13 +26,8 @@ export async function recordVisitAndGetCount() {
 }
 
 export async function getVisitsByCountry() {
-  const rows = await prisma.countryVisit.findMany({ orderBy: [{ date: "desc" }, { count: "desc" }] });
-  const byDate = new Map<string, { country: string; count: number }[]>();
-  for (const row of rows) {
-    const key = row.date.toISOString().slice(0, 10);
-    const list = byDate.get(key) ?? [];
-    list.push({ country: row.country, count: row.count });
-    byDate.set(key, list);
-  }
-  return [...byDate.entries()].map(([date, countries]) => ({ date, countries }));
+  const rows = await prisma.countryVisit.groupBy({ by: ["country"], _sum: { count: true } });
+  return rows
+    .map((r) => ({ country: r.country, count: r._sum.count ?? 0 }))
+    .sort((a, b) => b.count - a.count);
 }
