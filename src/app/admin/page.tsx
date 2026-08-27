@@ -1,20 +1,20 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, isAdmin } from "@/lib/session";
 import { listUsers } from "@/lib/users";
-import { getVisitsByCountry } from "@/lib/visits";
+import { getVisitStats } from "@/lib/visits";
 import { UserModeration } from "@/components/admin/user-moderation";
-import { VisitsByCountry } from "@/components/admin/visits-by-country";
+import { VisitStats } from "@/components/admin/visit-stats";
 
 export default async function AdminPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/admin");
   if (!isAdmin(user)) redirect("/");
 
-  const [users, visits] = await Promise.all([listUsers(), getVisitsByCountry()]);
+  const [users, stats] = await Promise.all([listUsers(), getVisitStats()]);
   return (
     <>
       <UserModeration users={users} currentUserId={user.id} />
-      <VisitsByCountry visits={visits} />
+      <VisitStats stats={stats} />
     </>
   );
 }
