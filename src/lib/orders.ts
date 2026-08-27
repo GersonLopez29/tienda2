@@ -22,3 +22,14 @@ export function getOrdersForBuyer(buyerId: string) {
     include: { seller: { select: { name: true } }, items: true },
   });
 }
+
+export function getAllOrders() {
+  return prisma.order.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      buyer: { select: { name: true, email: true, whatsapp: true } },
+      seller: { select: { name: true } },
+      items: true,
+    },
+  });
+}

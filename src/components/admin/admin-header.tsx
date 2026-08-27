@@ -28,6 +28,9 @@ export function AdminHeader({ title }: { title: string }) {
           <a href="/admin/descuentos" className="text-sm font-semibold text-olive-ink hover:underline">
             Descuentos
           </a>
+          <a href="/admin/pedidos" className="text-sm font-semibold text-olive-ink hover:underline">
+            Pedidos
+          </a>
           <a href="/mis-prendas" className="text-sm font-semibold text-olive-ink hover:underline">
             Mis prendas
           </a>
