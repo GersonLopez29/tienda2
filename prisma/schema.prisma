@@ -115,6 +115,11 @@ model PageVisit {
   count Int    @default(0)
 }
 
+model CountryVisit {
+  country String @id
+  count   Int    @default(0)
+}
+
 model RegistrationAttempt {
   id        String   @id @default(cuid())
   ip        String
