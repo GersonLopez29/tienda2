@@ -16,7 +16,12 @@ export default async function AdminPage() {
   return (
     <>
       <UserModeration users={users} currentUserId={user.id} />
-      <ProductDiscounts products={products} />
+      <details className="mx-auto max-w-[1100px] px-4 sm:px-6">
+        <summary className="cursor-pointer select-none py-4 text-sm font-bold text-olive-ink">
+          Gestionar descuentos
+        </summary>
+        <ProductDiscounts products={products} />
+      </details>
       <VisitsByCountry visits={visits} />
     </>
   );
